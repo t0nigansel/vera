@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "./api";
 import type {
   AnswerConfidence,
   AttemptResult,
   CourseDetail,
   CourseSummary,
+  DistractorSource,
   GlossaryTerm,
   LearningObjective,
   LearningStatus,
@@ -12,11 +13,14 @@ import type {
   Question,
   ReasoningChoice,
   SystemStatus,
+  TermAttemptResult,
+  TermDirection,
+  TermExercise,
   TutorResponse,
 } from "./types";
 
 type Page = "dashboard" | "course" | "glossary" | "system";
-type CourseTab = "learn" | "objectives" | "progress" | "glossary";
+type CourseTab = "learn" | "terms" | "objectives" | "progress" | "glossary";
 
 const statusLabels: Record<LearningStatus, string> = {
   not_started: "Nicht begonnen",
@@ -32,6 +36,13 @@ const originLabels = {
   editorial: "Redaktionell",
   generated: "KI-generiert",
   user: "Eigener Inhalt",
+};
+
+const distractorSourceLabels: Record<DistractorSource, string> = {
+  cluster: "Distraktoren aus dem Verwechslungscluster",
+  see_also: "Distraktoren aus verwandten Begriffen",
+  chapter: "Distraktoren aus demselben Kapitel",
+  none: "Themenzuordnung",
 };
 
 export default function App() {
@@ -402,6 +413,7 @@ function CourseWorkspace({
       <div className="tab-bar" role="tablist" aria-label="Kursbereiche">
         {([
           ["learn", "Lernen"],
+          ["terms", "Begriffe"],
           ["objectives", "Lernziele"],
           ["progress", "Fortschritt"],
           ["glossary", "Glossar"],
@@ -421,6 +433,8 @@ function CourseWorkspace({
           onNext={() => void loadQuestion()}
           onCompleted={() => void refreshAfterAttempt()}
         />
+      ) : tab === "terms" ? (
+        <TermTrainer courseId={courseId} />
       ) : tab === "objectives" ? (
         <ObjectivesPanel course={course} onSelect={selectObjective} />
       ) : tab === "progress" && progress ? (
@@ -661,6 +675,235 @@ function QuestionCard({
         </div>
       )}
     </article>
+  );
+}
+
+function TermTrainer({ courseId }: { courseId: string }) {
+  const [direction, setDirection] = useState<TermDirection | "auto">("auto");
+  const [exercise, setExercise] = useState<TermExercise | null>(null);
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  const [confidence, setConfidence] = useState<AnswerConfidence | null>(null);
+  const [result, setResult] = useState<TermAttemptResult | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const requestSequence = useRef(0);
+
+  const loadExercise = useCallback(async () => {
+    const requestId = ++requestSequence.current;
+    setExercise(null);
+    setSelectedOptionId(null);
+    setConfidence(null);
+    setResult(null);
+    setLoading(true);
+    try {
+      const nextExercise = await api.nextTermExercise(
+        courseId,
+        direction === "auto" ? undefined : direction,
+      );
+      if (requestId !== requestSequence.current) return;
+      setExercise(nextExercise);
+      setError(null);
+    } catch (caught) {
+      if (requestId !== requestSequence.current) return;
+      setError(messageOf(caught));
+    } finally {
+      if (requestId === requestSequence.current) setLoading(false);
+    }
+  }, [courseId, direction]);
+
+  useEffect(() => {
+    void loadExercise();
+    return () => {
+      requestSequence.current += 1;
+    };
+  }, [loadExercise]);
+
+  const selectDirection = (value: TermDirection | "auto") => {
+    if (value === direction) return;
+    requestSequence.current += 1;
+    setExercise(null);
+    setSelectedOptionId(null);
+    setConfidence(null);
+    setResult(null);
+    setError(null);
+    setLoading(true);
+    setDirection(value);
+  };
+
+  const submit = async () => {
+    if (!exercise || !selectedOptionId || !confidence) return;
+    const requestId = ++requestSequence.current;
+    setLoading(true);
+    try {
+      const nextResult = await api.submitTermAttempt(
+        exercise.term_id,
+        exercise.direction,
+        selectedOptionId,
+        confidence,
+      );
+      if (requestId !== requestSequence.current) return;
+      setResult(nextResult);
+      setError(null);
+    } catch (caught) {
+      if (requestId !== requestSequence.current) return;
+      setError(messageOf(caught));
+    } finally {
+      if (requestId === requestSequence.current) setLoading(false);
+    }
+  };
+
+  const unavailable = error?.includes("Keine passende Begriffsübung") ?? false;
+  const errorMessage = unavailable
+    ? "Für diese Abfragerichtung ist derzeit kein Begriff verfügbar. Wähle eine andere Richtung."
+    : error;
+
+  return (
+    <div className="lesson-column">
+      <div className="section-heading">
+        <div>
+          <span className="eyebrow">Begriffstraining</span>
+          <h2>Offizielle Begriffe sicher unterscheiden</h2>
+          <p>Die Prüfung testet selten einzelne Begriffe, sondern die Abgrenzung ähnlicher.</p>
+        </div>
+      </div>
+
+      <div className="confidence-options" role="group" aria-label="Abfragerichtung">
+        {([
+          ["auto", "Automatisch"],
+          ["term_to_definition", "Begriff → Definition"],
+          ["definition_to_term", "Definition → Begriff"],
+          ["scenario_to_term", "Szenario → Begriff"],
+          ["term_to_topic", "Begriff → Thema"],
+        ] as [TermDirection | "auto", string][]).map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            className={direction === value ? "active" : ""}
+            onClick={() => selectDirection(value)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {errorMessage && (
+        <ErrorBanner
+          message={errorMessage}
+          onRetry={!unavailable && !exercise ? () => void loadExercise() : undefined}
+        />
+      )}
+      {loading && !exercise ? (
+        <LoadingState label="Begriffsübung wird ausgewählt …" />
+      ) : exercise ? (
+        <article className="question-card">
+          <div className="question-kicker">
+            <span>{exercise.instruction}</span>
+            <span>{distractorSourceLabels[exercise.distractor_source]}</span>
+            {exercise.cluster_title && <strong>{exercise.cluster_title}</strong>}
+          </div>
+          <h3>{exercise.prompt}</h3>
+          <div className="option-list">
+            {exercise.options.map((option, index) => {
+              const selected = selectedOptionId === option.id;
+              const state = result
+                ? option.id === result.correct_option_id
+                  ? "correct"
+                  : selected
+                    ? "incorrect"
+                    : "dimmed"
+                : selected
+                  ? "selected"
+                  : "";
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  className={`option ${state}`}
+                  onClick={() => {
+                    if (!result) setSelectedOptionId(option.id);
+                  }}
+                >
+                  <span className="option-letter">{String.fromCharCode(65 + index)}</span>
+                  <span className="option-copy">
+                    <span>{option.text}</span>
+                  </span>
+                  <span className="option-control">
+                    {result && option.id === result.correct_option_id
+                      ? "✓"
+                      : selected && result
+                        ? "×"
+                        : selected
+                          ? "●"
+                          : ""}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {!result && (
+            <>
+              <fieldset className="confidence-field">
+                <legend>Wie sicher bist du?</legend>
+                <span>Bewerte deine Sicherheit vor der Auflösung.</span>
+                <div className="confidence-options">
+                  {(["sure", "unsure", "guessed"] as AnswerConfidence[]).map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={confidence === value ? "active" : ""}
+                      onClick={() => setConfidence(value)}
+                    >
+                      {value === "sure" ? "Sicher" : value === "unsure" ? "Unsicher" : "Geraten"}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+              <div className="question-actions">
+                <span />
+                <button
+                  className="primary-button"
+                  disabled={!selectedOptionId || !confidence || loading}
+                  onClick={() => void submit()}
+                >
+                  {loading ? "Wird bewertet …" : "Antwort prüfen"}
+                </button>
+              </div>
+            </>
+          )}
+
+          {result && (
+            <div className={`result-box ${result.correct ? "success" : "needs-work"}`}>
+              <div className="result-heading">
+                <span className="result-icon">{result.correct ? "✓" : "↻"}</span>
+                <div>
+                  <strong>{result.correct ? "Richtig zugeordnet" : "Noch nicht sicher"}</strong>
+                  <span>{result.term}</span>
+                </div>
+              </div>
+              <p><strong>{result.term}</strong><br />{result.definition}</p>
+              <div className={`diagnosis-box ${result.tutor_recommended ? "priority" : ""}`}>
+                <strong>{result.diagnosis}</strong>
+                {result.correct && !result.counts_as_mastery && (
+                  <span>Zählt noch nicht als sichere Beherrschung.</span>
+                )}
+                {result.distinction && (
+                  <div className="term-solution">
+                    <strong>{result.cluster_title ? `${result.cluster_title}:` : "Abgrenzung:"}</strong>
+                    <span>{result.distinction}</span>
+                  </div>
+                )}
+              </div>
+              <p>Nächste Wiederholung: {formatReviewDate(result.review_due_at)}</p>
+              <SourceLink source={result.source} />
+              <button className="primary-button" onClick={() => void loadExercise()}>
+                Nächster Begriff
+              </button>
+            </div>
+          )}
+        </article>
+      ) : null}
+    </div>
   );
 }
 

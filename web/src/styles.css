@@ -181,6 +181,9 @@ textarea:focus, input:focus { border-color: #6f9985; box-shadow: 0 0 0 3px rgba(
 .diagnosis-box strong { color: var(--ink); font-size: 11px; line-height: 1.5; }
 .diagnosis-box span { color: #765b57; font-size: 10px; line-height: 1.5; }
 .diagnosis-box small { color: var(--muted); font-size: 9px; }
+.term-solution { margin-top: 5px; border: 1px solid var(--line); border-radius: 8px; padding: 10px; background: var(--paper); display: grid; gap: 4px; }
+.term-solution strong { color: var(--green-dark); }
+.term-solution span { color: var(--ink); font-size: 11px; font-weight: 600; }
 .result-box .tutor-trigger { float: left; margin-top: 8px; }
 .result-box .primary-button { float: right; margin-top: 8px; }
 .result-box::after { content: ""; display: block; clear: both; }

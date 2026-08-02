@@ -8,6 +8,9 @@ import type {
   Question,
   ReasoningChoice,
   SystemStatus,
+  TermAttemptResult,
+  TermDirection,
+  TermExercise,
   TutorResponse,
 } from "./types";
 
@@ -54,6 +57,26 @@ export const api = {
         confidence,
         reasoning_choice: reasoningChoice,
         reasoning,
+      }),
+    }),
+  nextTermExercise: (courseId: string, direction?: TermDirection) => {
+    const suffix = direction
+      ? `?direction=${encodeURIComponent(direction)}`
+      : "";
+    return request<TermExercise>(`/api/courses/${courseId}/terms/next${suffix}`);
+  },
+  submitTermAttempt: (
+    termId: string,
+    direction: TermDirection,
+    selectedOptionId: string,
+    confidence: AnswerConfidence,
+  ) =>
+    request<TermAttemptResult>(`/api/terms/${termId}/attempts`, {
+      method: "POST",
+      body: JSON.stringify({
+        direction,
+        selected_option_id: selectedOptionId,
+        confidence,
       }),
     }),
   glossary: (courseId?: string, query?: string) => {

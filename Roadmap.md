@@ -152,7 +152,7 @@ Die Rangfolge ist jetzt für beide Lernmodi dieselbe: fällige Wiederholungen, d
 
 `compress_for_exam` ist gerechnet und getestet, wird aber mit `None` aufgerufen: Das Prüfungsdatum liegt bislang nur im Browser. Die Anbindung braucht eine Schemaänderung und bleibt bewusst offen.
 
-### (f) Frontend
+### (f) Frontend — erledigt
 
 Tab „Begriffe" im Kurs-Arbeitsbereich mit Richtungswahl, Sicherheitsangabe und Clusterabgrenzung im Feedback. Begründungsauswahl im bestehenden Fragenmodus.
 

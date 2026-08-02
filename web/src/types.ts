@@ -28,6 +28,14 @@ export type AttemptOutcome =
   | "unsure_wrong"
   | "confident_wrong";
 
+export type TermDirection =
+  | "term_to_definition"
+  | "definition_to_term"
+  | "scenario_to_term"
+  | "term_to_topic";
+
+export type DistractorSource = "cluster" | "see_also" | "chapter" | "none";
+
 export interface SourceReference {
   label: string;
   url: string;
@@ -124,6 +132,38 @@ export interface AttemptResult {
   confidence: AnswerConfidence;
   diagnosis: string;
   misconception: string | null;
+  review_due_at: string;
+  tutor_recommended: boolean;
+  source: SourceReference;
+}
+
+export interface TermExerciseOption {
+  id: string;
+  text: string;
+}
+
+export interface TermExercise {
+  term_id: string;
+  direction: TermDirection;
+  instruction: string;
+  prompt: string;
+  options: TermExerciseOption[];
+  distractor_source: DistractorSource;
+  cluster_title: string | null;
+}
+
+export interface TermAttemptResult {
+  attempt_id: string;
+  correct: boolean;
+  correct_option_id: string;
+  term: string;
+  definition: string;
+  outcome: AttemptOutcome;
+  counts_as_mastery: boolean;
+  confidence: AnswerConfidence;
+  diagnosis: string;
+  distinction: string | null;
+  cluster_title: string | null;
   review_due_at: string;
   tutor_recommended: boolean;
   source: SourceReference;
