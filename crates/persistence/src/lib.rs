@@ -4,9 +4,10 @@ use domain::{
     ConfusionCluster, ConfusionClusterMember, ContentOrigin, CourseDetail, CourseSummary,
     GlossaryLink, GlossaryTerm, KLevelProgress, LearningObjective, LearningStatus,
     ObjectiveProgress, OptionFeedback, ProgressOverview, Question, QuestionOption, QuestionType,
-    ReasoningChoice, RetrievedContext, SourceReference, TermAttemptResult, TermAttemptSubmission,
-    TermCandidate, TermCard, TermDirection, TermExercise, TermExerciseInput, TermTopic,
-    build_exercise, rotate_direction,
+    ReasoningChoice, RetrievedContext, ReviewItemKind, ReviewState, SourceReference,
+    TermAttemptResult, TermAttemptSubmission, TermCandidate, TermCard, TermDirection, TermExercise,
+    TermExerciseInput, TermTopic, build_exercise, compress_for_exam, next_interval_days, next_item,
+    plan, rotate_direction,
 };
 use serde::Deserialize;
 use sqlx::{Row, SqlitePool, sqlite::SqlitePoolOptions};
@@ -715,18 +716,42 @@ impl Database {
         direction: Option<TermDirection>,
     ) -> Result<TermExercise, PersistenceError> {
         let now = Utc::now().to_rfc3339();
-        let term_ids: Vec<String> = sqlx::query_scalar(
-            "WITH candidates AS (SELECT g.id, EXISTS(SELECT 1 FROM term_attempts ta WHERE ta.glossary_term_id = g.id AND ta.profile_id = 'local-default') AS attempted, (SELECT ta.next_review_at FROM term_attempts ta WHERE ta.glossary_term_id = g.id AND ta.profile_id = 'local-default' ORDER BY ta.created_at DESC, ta.id DESC LIMIT 1) AS next_review_at FROM glossary_terms g JOIN course_glossary_terms cgt ON cgt.glossary_term_id = g.id WHERE cgt.course_id = ?) SELECT id FROM candidates ORDER BY CASE WHEN attempted = 1 AND next_review_at <= ? THEN 0 WHEN attempted = 0 THEN 1 ELSE 2 END, CASE WHEN attempted = 1 AND next_review_at <= ? THEN next_review_at END DESC, CASE WHEN attempted = 1 AND next_review_at > ? THEN next_review_at END ASC, id LIMIT 25",
+        let rows = sqlx::query(
+            "SELECT g.id AS item_id, COUNT(ta.id) AS attempts, (SELECT latest.next_review_at FROM term_attempts latest WHERE latest.glossary_term_id = g.id AND latest.profile_id = 'local-default' ORDER BY latest.created_at DESC, latest.id DESC LIMIT 1) AS due_at FROM glossary_terms g JOIN course_glossary_terms cgt ON cgt.glossary_term_id = g.id LEFT JOIN term_attempts ta ON ta.glossary_term_id = g.id AND ta.profile_id = 'local-default' WHERE cgt.course_id = ? GROUP BY g.id",
         )
         .bind(course_id)
-        .bind(&now)
-        .bind(&now)
-        .bind(&now)
         .fetch_all(&self.pool)
         .await?;
+        let states = rows
+            .into_iter()
+            .map(|row| ReviewState {
+                item_id: row.get("item_id"),
+                kind: ReviewItemKind::Term,
+                attempts: row.get("attempts"),
+                due_at: row.get("due_at"),
+            })
+            .collect();
+        let review_plan = plan(states, &now);
+        let last_item_id: Option<String> = sqlx::query_scalar(
+            "SELECT ta.glossary_term_id FROM term_attempts ta JOIN course_glossary_terms cgt ON cgt.glossary_term_id = ta.glossary_term_id WHERE ta.profile_id = 'local-default' AND cgt.course_id = ? ORDER BY ta.created_at DESC, ta.id DESC LIMIT 1",
+        )
+        .bind(course_id)
+        .fetch_optional(&self.pool)
+        .await?;
+        let first_item = next_item(&review_plan, last_item_id.as_deref())
+            .ok_or_else(|| PersistenceError::NotFound("Keine passende Begriffsübung".into()))?;
+        let first_index = review_plan
+            .iter()
+            .position(|item| item.item_id == first_item.item_id)
+            .expect("Ein Planeintrag muss in seinem Plan enthalten sein");
 
-        for term_id in term_ids {
-            let input = self.term_exercise_input(&term_id).await?;
+        for item in review_plan
+            .iter()
+            .skip(first_index)
+            .chain(review_plan.iter().take(first_index))
+            .take(25)
+        {
+            let input = self.term_exercise_input(&item.item_id).await?;
             let selected_direction = direction.or_else(|| rotate_direction(&input));
             if let Some(exercise) = selected_direction
                 .and_then(|selected_direction| build_exercise(&input, selected_direction))
@@ -752,8 +777,32 @@ impl Database {
         let confidence = submission.confidence.clone();
         let diagnosis =
             AttemptDiagnosis::evaluate(correct, &confidence, ReasoningChoice::NotStated);
+        let previous_attempts = sqlx::query(
+            "SELECT is_correct, confidence FROM term_attempts WHERE glossary_term_id = ? AND profile_id = 'local-default' ORDER BY created_at DESC, id DESC LIMIT 10",
+        )
+        .bind(term_id)
+        .fetch_all(&self.pool)
+        .await?;
+        let mastery_streak = previous_attempts
+            .into_iter()
+            .take_while(|row| {
+                let confidence = match row.get::<String, _>("confidence").as_str() {
+                    "sure" => AnswerConfidence::Sure,
+                    "guessed" => AnswerConfidence::Guessed,
+                    _ => AnswerConfidence::Unsure,
+                };
+                AttemptDiagnosis::evaluate(
+                    row.get::<i64, _>("is_correct") == 1,
+                    &confidence,
+                    ReasoningChoice::NotStated,
+                )
+                .counts_as_mastery
+            })
+            .count() as i64;
+        let review_interval_days =
+            compress_for_exam(next_interval_days(mastery_streak, &diagnosis), None);
         let now = Utc::now();
-        let review_due_at = (now + Duration::days(diagnosis.review_interval_days)).to_rfc3339();
+        let review_due_at = (now + Duration::days(review_interval_days)).to_rfc3339();
         let attempt_id = Uuid::new_v4().to_string();
         let source_row =
             sqlx::query("SELECT source_label, source_url, origin FROM glossary_terms WHERE id = ?")
@@ -810,16 +859,36 @@ impl Database {
         objective_id: Option<&str>,
     ) -> Result<Question, PersistenceError> {
         let now = Utc::now().to_rfc3339();
-        let row = sqlx::query(
-            "SELECT q.* FROM questions q WHERE q.course_id = ? AND q.review_status = 'approved' AND (? IS NULL OR q.learning_objective_id = ?) ORDER BY CASE WHEN (SELECT COUNT(*) FROM attempts a WHERE a.question_id = q.id AND a.profile_id = 'local-default') = 0 THEN 0 WHEN COALESCE((SELECT a.next_review_at FROM attempts a WHERE a.question_id = q.id AND a.profile_id = 'local-default' ORDER BY a.created_at DESC, a.id DESC LIMIT 1), '') <= ? THEN 1 ELSE 2 END, COALESCE((SELECT a.next_review_at FROM attempts a WHERE a.question_id = q.id AND a.profile_id = 'local-default' ORDER BY a.created_at DESC, a.id DESC LIMIT 1), ''), q.id LIMIT 1",
+        let rows = sqlx::query(
+            "SELECT q.id AS item_id, COUNT(a.id) AS attempts, (SELECT latest.next_review_at FROM attempts latest WHERE latest.question_id = q.id AND latest.profile_id = 'local-default' ORDER BY latest.created_at DESC, latest.id DESC LIMIT 1) AS due_at FROM questions q LEFT JOIN attempts a ON a.question_id = q.id AND a.profile_id = 'local-default' WHERE q.course_id = ? AND q.review_status = 'approved' AND (? IS NULL OR q.learning_objective_id = ?) GROUP BY q.id",
         )
         .bind(course_id)
         .bind(objective_id)
         .bind(objective_id)
-        .bind(&now)
+        .fetch_all(&self.pool)
+        .await?;
+        let states = rows
+            .into_iter()
+            .map(|row| ReviewState {
+                item_id: row.get("item_id"),
+                kind: ReviewItemKind::LearningObjective,
+                attempts: row.get("attempts"),
+                due_at: row.get("due_at"),
+            })
+            .collect();
+        let review_plan = plan(states, &now);
+        let last_item_id: Option<String> = sqlx::query_scalar(
+            "SELECT a.question_id FROM attempts a JOIN questions q ON q.id = a.question_id WHERE a.profile_id = 'local-default' AND q.course_id = ? ORDER BY a.created_at DESC, a.id DESC LIMIT 1",
+        )
+        .bind(course_id)
         .fetch_optional(&self.pool)
-        .await?
-        .ok_or_else(|| PersistenceError::NotFound("Keine passende Frage".into()))?;
+        .await?;
+        let selected_item = next_item(&review_plan, last_item_id.as_deref())
+            .ok_or_else(|| PersistenceError::NotFound("Keine passende Frage".into()))?;
+        let row = sqlx::query("SELECT * FROM questions WHERE id = ?")
+            .bind(&selected_item.item_id)
+            .fetch_one(&self.pool)
+            .await?;
 
         let question_id: String = row.get("id");
         let option_rows = sqlx::query(
@@ -888,6 +957,7 @@ impl Database {
             .collect();
         let correct =
             selected.len() == expected.len() && selected.iter().all(|id| expected.contains(*id));
+        let objective_id: String = question.get("learning_objective_id");
         let attempt_id = Uuid::new_v4().to_string();
         let confidence = submission.confidence.clone();
         let confidence_value = confidence_value(&confidence);
@@ -895,7 +965,39 @@ impl Database {
         let now = Utc::now();
         let diagnosis =
             AttemptDiagnosis::evaluate(correct, &confidence, submission.reasoning_choice);
-        let review_due_at = (now + Duration::days(diagnosis.review_interval_days)).to_rfc3339();
+        let previous_attempts = sqlx::query(
+            "SELECT a.is_correct, a.confidence, a.reasoning_choice FROM attempts a JOIN questions q ON q.id = a.question_id WHERE q.learning_objective_id = ? AND a.profile_id = 'local-default' ORDER BY a.created_at DESC, a.id DESC LIMIT 10",
+        )
+        .bind(&objective_id)
+        .fetch_all(&self.pool)
+        .await?;
+        let mastery_streak = previous_attempts
+            .into_iter()
+            .take_while(|row| {
+                let confidence = match row.get::<String, _>("confidence").as_str() {
+                    "sure" => AnswerConfidence::Sure,
+                    "guessed" => AnswerConfidence::Guessed,
+                    _ => AnswerConfidence::Unsure,
+                };
+                let reasoning_choice = match row.get::<String, _>("reasoning_choice").as_str() {
+                    "recalled" => ReasoningChoice::Recalled,
+                    "eliminated" => ReasoningChoice::Eliminated,
+                    "applied_rule" => ReasoningChoice::AppliedRule,
+                    "from_experience" => ReasoningChoice::FromExperience,
+                    "guessed" => ReasoningChoice::Guessed,
+                    _ => ReasoningChoice::NotStated,
+                };
+                AttemptDiagnosis::evaluate(
+                    row.get::<i64, _>("is_correct") == 1,
+                    &confidence,
+                    reasoning_choice,
+                )
+                .counts_as_mastery
+            })
+            .count() as i64;
+        let review_interval_days =
+            compress_for_exam(next_interval_days(mastery_streak, &diagnosis), None);
+        let review_due_at = (now + Duration::days(review_interval_days)).to_rfc3339();
         let misconception = option_rows
             .iter()
             .find(|row| {
@@ -921,7 +1023,6 @@ impl Database {
         .execute(&self.pool)
         .await?;
 
-        let objective_id: String = question.get("learning_objective_id");
         let course_id: String = question.get("course_id");
         let learning_status = self
             .progress(&course_id)
@@ -1474,6 +1575,79 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn confidently_wrong_term_is_due_but_not_repeated_when_another_exists() {
+        let database = Database::in_memory().await.unwrap();
+        let first = database.next_term_exercise("ctfl-4", None).await.unwrap();
+        let wrong_option_id = first
+            .options
+            .iter()
+            .find(|option| option.id != first.correct_option_id)
+            .unwrap()
+            .id
+            .clone();
+        database
+            .submit_term_attempt(
+                &first.term_id,
+                TermAttemptSubmission {
+                    direction: first.direction,
+                    selected_option_id: wrong_option_id,
+                    confidence: AnswerConfidence::Sure,
+                },
+            )
+            .await
+            .unwrap();
+
+        let due: i64 = sqlx::query_scalar(
+            "SELECT COUNT(*) FROM term_attempts WHERE glossary_term_id = ? AND next_review_at <= created_at",
+        )
+        .bind(&first.term_id)
+        .fetch_one(&database.pool)
+        .await
+        .unwrap();
+        let second = database.next_term_exercise("ctfl-4", None).await.unwrap();
+
+        assert_eq!(due, 1);
+        assert_ne!(second.term_id, first.term_id);
+    }
+
+    #[tokio::test]
+    async fn only_trainable_term_is_repeated_immediately() {
+        let database = Database::in_memory().await.unwrap();
+        let term_id = "glossary-defect";
+        sqlx::query(
+            "DELETE FROM course_glossary_terms WHERE course_id = 'ctfl-4' AND glossary_term_id != ?",
+        )
+        .bind(term_id)
+        .execute(&database.pool)
+        .await
+        .unwrap();
+        let input = database.term_exercise_input(term_id).await.unwrap();
+        let exercise = build_exercise(&input, TermDirection::TermToDefinition).unwrap();
+        let wrong_option_id = exercise
+            .options
+            .iter()
+            .find(|option| option.id != exercise.correct_option_id)
+            .unwrap()
+            .id
+            .clone();
+        database
+            .submit_term_attempt(
+                term_id,
+                TermAttemptSubmission {
+                    direction: exercise.direction,
+                    selected_option_id: wrong_option_id,
+                    confidence: AnswerConfidence::Sure,
+                },
+            )
+            .await
+            .unwrap();
+
+        let next = database.next_term_exercise("ctfl-4", None).await.unwrap();
+
+        assert_eq!(next.term_id, term_id);
+    }
+
+    #[tokio::test]
     async fn attempts_are_scored_deterministically() {
         let database = Database::in_memory().await.unwrap();
         let question = database.next_question("ctfl-4", None).await.unwrap();
@@ -1493,6 +1667,64 @@ mod tests {
         assert_eq!(result.earned_points, 1);
         assert_eq!(result.confidence, AnswerConfidence::Sure);
         assert!(!result.tutor_recommended);
+    }
+
+    #[tokio::test]
+    async fn consecutive_mastery_answers_use_seven_then_fourteen_days() {
+        let database = Database::in_memory().await.unwrap();
+        let submission = || AttemptSubmission {
+            selected_option_ids: vec!["ctfl-q1-o2".into()],
+            confidence: AnswerConfidence::Sure,
+            reasoning_choice: ReasoningChoice::Recalled,
+            reasoning: String::new(),
+        };
+
+        let first = database
+            .submit_attempt("ctfl-q1", submission())
+            .await
+            .unwrap();
+        let second = database
+            .submit_attempt("ctfl-q1", submission())
+            .await
+            .unwrap();
+
+        for (result, expected_days) in [(&first, 7), (&second, 14)] {
+            let row = sqlx::query("SELECT created_at, next_review_at FROM attempts WHERE id = ?")
+                .bind(&result.attempt_id)
+                .fetch_one(&database.pool)
+                .await
+                .unwrap();
+            let created_at =
+                chrono::DateTime::parse_from_rfc3339(&row.get::<String, _>("created_at")).unwrap();
+            let next_review_at =
+                chrono::DateTime::parse_from_rfc3339(&row.get::<String, _>("next_review_at"))
+                    .unwrap();
+
+            assert_eq!(
+                next_review_at.signed_duration_since(created_at).num_days(),
+                expected_days
+            );
+        }
+    }
+
+    #[tokio::test]
+    async fn due_question_is_selected_before_a_new_question() {
+        let database = Database::in_memory().await.unwrap();
+        let now = Utc::now();
+        sqlx::query(
+            "INSERT INTO attempts (id, profile_id, question_id, selected_option_ids, reasoning, reasoning_choice, is_correct, confidence, next_review_at, created_at) VALUES ('due-attempt', 'local-default', 'ctfl-q1', '[]', '', 'not_stated', 0, 'unsure', ?, ?), ('upcoming-attempt', 'local-default', 'ctfl-q2', '[]', '', 'not_stated', 1, 'sure', ?, ?)",
+        )
+        .bind((now - Duration::days(1)).to_rfc3339())
+        .bind((now - Duration::minutes(2)).to_rfc3339())
+        .bind((now + Duration::days(30)).to_rfc3339())
+        .bind((now - Duration::minutes(1)).to_rfc3339())
+        .execute(&database.pool)
+        .await
+        .unwrap();
+
+        let question = database.next_question("ctfl-4", None).await.unwrap();
+
+        assert_eq!(question.id, "ctfl-q1");
     }
 
     #[tokio::test]

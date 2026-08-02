@@ -142,9 +142,15 @@ Die Lösung verlässt den Server nicht: `correct_option_id` ist `#[serde(skip_se
 
 Bewertung, Intervall und Diagnosetext stammen aus `AttemptDiagnosis::evaluate` — es gibt keine zweite Diagnoselogik neben der aus Meilenstein (b).
 
-### (e) Wiederholungsplanung
+### (e) Wiederholungsplanung — erledigt
 
 Neues Modul `domain::review`, einheitlich über Learning Objectives und Begriffe: Intervallleiter, Vorrücken bei sicher richtig, Halten bei unsicher richtig, Rücksetzen bei falsch, Verdichtung bei gesetztem Prüfungsdatum. `persistence` liefert nur Zähler und Zeitpunkte. Deterministisch und unit-getestet.
+
+Die Leiter lautet 7, 14, 30, 60 Tage, indiziert über die Serie unmittelbar vorangehender Antworten, die als Beherrschung zählten. Was nicht als Beherrschung zählt — auch sicher richtig durch Ausschluss — wird nicht gestreckt, sondern behält das kurze Intervall aus der Diagnose.
+
+Die Rangfolge ist jetzt für beide Lernmodi dieselbe: fällige Wiederholungen, dann noch nicht Geübtes, dann alles Weitere. Die eigenen `ORDER BY CASE`-Konstrukte in `next_question` und `next_term_exercise` sind entfallen. Weil eine sicher falsche Antwort das Intervall 0 ergibt und damit sofort wieder fällig ist, liefert `next_item` den ersten Eintrag, der **nicht** der zuletzt beantwortete ist — außer es gibt keinen anderen. Ohne diese Regel klebte der Nutzer an dem Eintrag fest, an dem er gerade scheitert.
+
+`compress_for_exam` ist gerechnet und getestet, wird aber mit `None` aufgerufen: Das Prüfungsdatum liegt bislang nur im Browser. Die Anbindung braucht eine Schemaänderung und bleibt bewusst offen.
 
 ### (f) Frontend
 
@@ -163,7 +169,7 @@ Tab „Begriffe" im Kurs-Arbeitsbereich mit Richtungswahl, Sicherheitsangabe und
 
 ## Offene Punkte
 
-- Fragen und Begriffe sortieren die nächste Aktivität unterschiedlich: `next_question` zeigt zuerst noch nie beantwortete Fragen und danach fällige Wiederholungen, `next_term_exercise` genau umgekehrt. Für einen sicher falsch beantworteten Begriff bedeutet das eine sofortige Wiedervorlage — richtig im Sinne von Vision.md, aber bei wiederholtem Scheitern sieht der Nutzer nichts Neues mehr. Die Rangfolge gehört vereinheitlicht und ist in Meilenstein (e) zu entscheiden, wo der Wiederholungsplaner entsteht.
+- Das Prüfungsdatum liegt nur im Browser (`localStorage`). Solange der Server es nicht kennt, bleibt `compress_for_exam` ohne Wirkung und der Lernplan verdichtet sich vor dem Termin nicht. Die Anbindung braucht eine Schemaänderung und eine Route.
 
 - Die harte Obergrenze `LIMIT 100` in der Glossarabfrage ([crates/persistence/src/lib.rs:316](crates/persistence/src/lib.rs#L316)) schneidet größere Bestände stillschweigend ab.
 - Das Frontend zeigt den Hinweis „Starter-Snapshot" fest verdrahtet an ([web/src/App.tsx:830-832](web/src/App.tsx#L830-L832)), unabhängig vom tatsächlich installierten Bestand.
