@@ -8,7 +8,7 @@ Liest die PDF-Quellen aus content/ und erzeugt strukturierte JSON-Dateien:
 
 Anschließend wird content/seed.json aktualisiert: Der CTFL-Kurs erhält die
 echten Kapitel und Learning Objectives, das Glossar die tatsächlich für CTFL
-relevanten Begriffe (Keyword-Listen des Syllabus).
+relevanten Begriffe (Keyword-Listen des Syllabus und Verwechslungscluster).
 
 Kein LLM. Rein regelbasiert und wiederholbar.
 
@@ -17,6 +17,7 @@ Aufruf:  python3 tools/import_content.py
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -284,19 +285,41 @@ def parse_syllabus(raw: str) -> list[Chapter]:
 # --------------------------------------------------------------------- Ausgabe
 
 
-def build_seed(terms: list[GlossaryTerm], chapters: list[Chapter], sections: dict[str, str]) -> dict:
+def build_seed(
+    terms: list[GlossaryTerm],
+    chapters: list[Chapter],
+    sections: dict[str, str],
+    cluster_data: dict,
+) -> dict:
     seed = json.loads((CONTENT / "seed.json").read_text(encoding="utf-8"))
+    seed.pop("corpus_version", None)
 
     # Vergleich über die entzerrte Form, damit PDF-Trennartefakte
     # ("test proces s") trotzdem auf den Glossarbegriff treffen.
     keyword_set = {despace(kw) for chapter in chapters for kw in chapter.keywords}
-    relevant = [t for t in terms if despace(t.term) in keyword_set]
+    terms_by_key = {despace(term.term): term for term in terms}
+    cluster_term_keys: set[str] = set()
+    for cluster in cluster_data["clusters"]:
+        for member in cluster["members"]:
+            key = despace(member["term"])
+            if key not in terms_by_key:
+                sys.exit(
+                    f"Cluster-Mitglied '{member['term']}' fehlt im Gesamtglossar "
+                    f"(Cluster {cluster['id']})."
+                )
+            cluster_term_keys.add(key)
+    relevant = [
+        term
+        for term in terms
+        if despace(term.term) in keyword_set | cluster_term_keys
+    ]
 
     ctfl = next(c for c in seed["courses"] if c["id"] == "ctfl-4")
     ctfl["version"] = "4.0.1"
     ctfl["chapters"] = []
 
     first_objective_id = None
+    objective_ids_by_chapter: dict[int, list[str]] = {}
     for chapter in chapters:
         chapter_id = f"ctfl-ch{chapter.position}"
         objectives = []
@@ -316,6 +339,9 @@ def build_seed(terms: list[GlossaryTerm], chapters: list[Chapter], sections: dic
                     "source_section": f"{objective.section} {section_title}".strip(),
                 }
             )
+        objective_ids_by_chapter[chapter.position] = [
+            objective["id"] for objective in objectives
+        ]
         ctfl["chapters"].append(
             {
                 "id": chapter_id,
@@ -326,19 +352,74 @@ def build_seed(terms: list[GlossaryTerm], chapters: list[Chapter], sections: dic
             }
         )
 
-    seed["glossary"] = [
+    relevant_ids = {
+        despace(term.term): f"glossary-{slugify(term.term)}" for term in relevant
+    }
+    glossary = []
+    for term in relevant:
+        objective_edges: set[tuple[str, str]] = set()
+        for chapter in chapters:
+            if despace(term.term) in {despace(kw) for kw in chapter.keywords}:
+                objective_edges.update(
+                    (objective_id, "chapter_keyword")
+                    for objective_id in objective_ids_by_chapter[chapter.position]
+                )
+
+            normalized_term = re.sub(r"\s+", " ", term.term.lower()).strip()
+            for objective, objective_id in zip(
+                chapter.objectives,
+                objective_ids_by_chapter[chapter.position],
+            ):
+                normalized_title = re.sub(r"\s+", " ", objective.title.lower()).strip()
+                if re.search(
+                    r"\b" + re.escape(normalized_term) + r"\b", normalized_title
+                ):
+                    objective_edges.add((objective_id, "objective_title"))
+
+        glossary.append(
+            {
+                "id": f"glossary-{slugify(term.term)}",
+                "term": term.term,
+                "definition": term.definition,
+                "language": "en",
+                "snapshot": "istqb-glossary-4.7.2",
+                "origin": "official",
+                "source_label": GLOSSARY_LABEL,
+                "source_url": GLOSSARY_URL,
+                "courses": ["ctfl-4"],
+                "term_version": term.term_version,
+                "reference": term.reference,
+                "synonyms": term.synonyms,
+                "abbreviations": term.abbreviations,
+                "see_also": [
+                    {"value": value, "term_id": relevant_ids.get(despace(value))}
+                    for value in term.see_also
+                ],
+                "objectives": [
+                    {"learning_objective_id": objective_id, "relation": relation}
+                    for objective_id, relation in sorted(objective_edges)
+                ],
+            }
+        )
+    seed["glossary"] = glossary
+
+    seed["confusion_clusters"] = [
         {
-            "id": f"glossary-{slugify(term.term)}",
-            "term": term.term,
-            "definition": term.definition,
-            "language": "en",
-            "snapshot": "istqb-glossary-4.7.2",
-            "origin": "official",
-            "source_label": GLOSSARY_LABEL,
-            "source_url": GLOSSARY_URL,
-            "courses": ["ctfl-4"],
+            "id": cluster["id"],
+            "course_id": cluster_data["course_id"],
+            "title": cluster["title"],
+            "note": cluster["note"],
+            "origin": cluster_data["origin"],
+            "members": [
+                {
+                    "glossary_term_id": relevant_ids[despace(member["term"])],
+                    "position": position,
+                    "distinction": member["distinction"],
+                }
+                for position, member in enumerate(cluster["members"], start=1)
+            ],
         }
-        for term in relevant
+        for cluster in cluster_data["clusters"]
     ]
 
     # Demo-Fragen auf echte Learning Objectives umhängen, damit Fremdschlüssel halten.
@@ -347,7 +428,14 @@ def build_seed(terms: list[GlossaryTerm], chapters: list[Chapter], sections: dic
         if question["course_id"] == "ctfl-4" and question["learning_objective_id"] not in valid:
             question["learning_objective_id"] = first_objective_id
 
-    return seed, relevant
+    canonical_seed = json.dumps(
+        seed, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    corpus_version = (
+        "ctfl-4.0.1-glossary-4.7.2-"
+        + hashlib.sha256(canonical_seed).hexdigest()[:12]
+    )
+    return {"corpus_version": corpus_version, **seed}, relevant
 
 
 def main() -> None:
@@ -355,6 +443,7 @@ def main() -> None:
 
     terms = parse_glossary(read_pdf(GLOSSARY_PDF))
     chapters, sections = parse_syllabus(read_pdf(CTFL_PDF))
+    cluster_data = json.loads((CONTENT / "clusters.json").read_text(encoding="utf-8"))
 
     (GENERATED / "glossary.json").write_text(
         json.dumps(
@@ -386,18 +475,46 @@ def main() -> None:
         encoding="utf-8",
     )
 
-    seed, relevant = build_seed(terms, chapters, sections)
+    seed, relevant = build_seed(terms, chapters, sections, cluster_data)
     (CONTENT / "seed.json").write_text(
         json.dumps(seed, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
 
     objectives = sum(len(c.objectives) for c in chapters)
     keywords = {despace(kw) for c in chapters for kw in c.keywords}
+    cluster_members = sum(
+        len(cluster["members"]) for cluster in seed["confusion_clusters"]
+    )
+    resolved_see_also = sum(
+        edge["term_id"] is not None
+        for term in seed["glossary"]
+        for edge in term["see_also"]
+    )
+    unresolved_see_also = sum(
+        edge["term_id"] is None
+        for term in seed["glossary"]
+        for edge in term["see_also"]
+    )
+    objective_edges = {
+        relation: sum(
+            edge["relation"] == relation
+            for term in seed["glossary"]
+            for edge in term["objectives"]
+        )
+        for relation in ("chapter_keyword", "objective_title")
+    }
     print(f"Glossar gesamt      : {len(terms)} Begriffe")
     print(f"CTFL-Keywords       : {len(keywords)}")
     print(f"CTFL-relevant       : {len(relevant)} Begriffe")
     print(f"CTFL-Kapitel        : {len(chapters)}")
     print(f"Learning Objectives : {objectives}")
+    print(f"Cluster             : {len(seed['confusion_clusters'])}")
+    print(f"Cluster-Mitglieder  : {cluster_members}")
+    print(f"See-also aufgelöst  : {resolved_see_also}")
+    print(f"See-also offen      : {unresolved_see_also}")
+    print(f"LO chapter_keyword  : {objective_edges['chapter_keyword']}")
+    print(f"LO objective_title  : {objective_edges['objective_title']}")
+    print(f"Corpusversion       : {seed['corpus_version']}")
     for chapter in chapters:
         print(
             f"  {chapter.position}. {chapter.title[:44]:<44} "

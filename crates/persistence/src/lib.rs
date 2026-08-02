@@ -43,7 +43,7 @@ impl Database {
             .await?;
         sqlx::migrate!("../../migrations").run(&pool).await?;
         let database = Self { pool };
-        database.seed_if_empty().await?;
+        database.install_content().await?;
         Ok(database)
     }
 
@@ -56,24 +56,41 @@ impl Database {
             .await?;
         sqlx::migrate!("../../migrations").run(&pool).await?;
         let database = Self { pool };
-        database.seed_if_empty().await?;
+        database.install_content().await?;
         Ok(database)
     }
 
-    pub async fn seed_if_empty(&self) -> Result<(), PersistenceError> {
+    pub async fn install_content(&self) -> Result<(), PersistenceError> {
+        let seed: Seed = serde_json::from_str(include_str!("../../../content/seed.json"))?;
+        let installed_version: Option<String> =
+            sqlx::query_scalar("SELECT corpus_version FROM content_versions WHERE id = 1")
+                .fetch_optional(&self.pool)
+                .await?;
         let existing: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM courses")
             .fetch_one(&self.pool)
             .await?;
-        if existing > 0 {
+        if installed_version.as_deref() == Some(seed.corpus_version.as_str()) && existing > 0 {
             return Ok(());
         }
 
-        let seed: Seed = serde_json::from_str(include_str!("../../../content/seed.json"))?;
         let mut transaction = self.pool.begin().await?;
 
-        for course in seed.courses {
+        for table in [
+            "course_glossary_terms",
+            "glossary_term_links",
+            "confusion_cluster_members",
+            "confusion_clusters",
+            "glossary_term_objectives",
+            "knowledge_fts",
+        ] {
+            sqlx::query(&format!("DELETE FROM {table}"))
+                .execute(&mut *transaction)
+                .await?;
+        }
+
+        for course in &seed.courses {
             sqlx::query(
-                "INSERT INTO courses (id, code, name, version, description, exam_questions, passing_score, exam_minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO courses (id, code, name, version, description, exam_questions, passing_score, exam_minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET code = excluded.code, name = excluded.name, version = excluded.version, description = excluded.description, exam_questions = excluded.exam_questions, passing_score = excluded.passing_score, exam_minutes = excluded.exam_minutes",
             )
             .bind(&course.id)
             .bind(&course.code)
@@ -86,9 +103,9 @@ impl Database {
             .execute(&mut *transaction)
             .await?;
 
-            for chapter in course.chapters {
+            for chapter in &course.chapters {
                 sqlx::query(
-                    "INSERT INTO chapters (id, course_id, position, title, description) VALUES (?, ?, ?, ?, ?)",
+                    "INSERT INTO chapters (id, course_id, position, title, description) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET course_id = excluded.course_id, position = excluded.position, title = excluded.title, description = excluded.description",
                 )
                 .bind(&chapter.id)
                 .bind(&course.id)
@@ -98,9 +115,9 @@ impl Database {
                 .execute(&mut *transaction)
                 .await?;
 
-                for objective in chapter.objectives {
+                for objective in &chapter.objectives {
                     sqlx::query(
-                        "INSERT INTO learning_objectives (id, course_id, chapter_id, code, k_level, title, summary, source_label, source_url, source_section) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "INSERT INTO learning_objectives (id, course_id, chapter_id, code, k_level, title, summary, source_label, source_url, source_section) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET course_id = excluded.course_id, chapter_id = excluded.chapter_id, code = excluded.code, k_level = excluded.k_level, title = excluded.title, summary = excluded.summary, source_label = excluded.source_label, source_url = excluded.source_url, source_section = excluded.source_section",
                     )
                     .bind(&objective.id)
                     .bind(&course.id)
@@ -131,9 +148,9 @@ impl Database {
             }
         }
 
-        for term in seed.glossary {
+        for term in &seed.glossary {
             sqlx::query(
-                "INSERT INTO glossary_terms (id, term, definition, language, snapshot, origin, source_label, source_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO glossary_terms (id, term, definition, language, snapshot, origin, source_label, source_url, term_version, reference) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET term = excluded.term, definition = excluded.definition, language = excluded.language, snapshot = excluded.snapshot, origin = excluded.origin, source_label = excluded.source_label, source_url = excluded.source_url, term_version = excluded.term_version, reference = excluded.reference",
             )
             .bind(&term.id)
             .bind(&term.term)
@@ -143,10 +160,35 @@ impl Database {
             .bind(&term.origin)
             .bind(&term.source_label)
             .bind(&term.source_url)
+            .bind(&term.term_version)
+            .bind(&term.reference)
             .execute(&mut *transaction)
             .await?;
+        }
 
+        let existing_course_ids: HashSet<String> = sqlx::query_scalar("SELECT id FROM courses")
+            .fetch_all(&mut *transaction)
+            .await?
+            .into_iter()
+            .collect();
+        let existing_term_ids: HashSet<String> =
+            sqlx::query_scalar("SELECT id FROM glossary_terms")
+                .fetch_all(&mut *transaction)
+                .await?
+                .into_iter()
+                .collect();
+        let existing_objective_ids: HashSet<String> =
+            sqlx::query_scalar("SELECT id FROM learning_objectives")
+                .fetch_all(&mut *transaction)
+                .await?
+                .into_iter()
+                .collect();
+
+        for term in &seed.glossary {
             for course_id in &term.courses {
+                if !existing_course_ids.contains(course_id) {
+                    continue;
+                }
                 sqlx::query(
                     "INSERT INTO course_glossary_terms (course_id, glossary_term_id) VALUES (?, ?)",
                 )
@@ -168,11 +210,88 @@ impl Database {
                 .execute(&mut *transaction)
                 .await?;
             }
+
+            for value in &term.synonyms {
+                sqlx::query(
+                    "INSERT INTO glossary_term_links (glossary_term_id, kind, value, target_term_id) VALUES (?, 'synonym', ?, NULL) ON CONFLICT(glossary_term_id, kind, value) DO UPDATE SET target_term_id = excluded.target_term_id",
+                )
+                .bind(&term.id)
+                .bind(value)
+                .execute(&mut *transaction)
+                .await?;
+            }
+            for value in &term.abbreviations {
+                sqlx::query(
+                    "INSERT INTO glossary_term_links (glossary_term_id, kind, value, target_term_id) VALUES (?, 'abbreviation', ?, NULL) ON CONFLICT(glossary_term_id, kind, value) DO UPDATE SET target_term_id = excluded.target_term_id",
+                )
+                .bind(&term.id)
+                .bind(value)
+                .execute(&mut *transaction)
+                .await?;
+            }
+            for link in &term.see_also {
+                if link
+                    .term_id
+                    .as_ref()
+                    .is_some_and(|target| !existing_term_ids.contains(target))
+                {
+                    continue;
+                }
+                sqlx::query(
+                    "INSERT INTO glossary_term_links (glossary_term_id, kind, value, target_term_id) VALUES (?, 'see_also', ?, ?) ON CONFLICT(glossary_term_id, kind, value) DO UPDATE SET target_term_id = excluded.target_term_id",
+                )
+                .bind(&term.id)
+                .bind(&link.value)
+                .bind(&link.term_id)
+                .execute(&mut *transaction)
+                .await?;
+            }
+            for objective in &term.objectives {
+                if !existing_objective_ids.contains(&objective.learning_objective_id) {
+                    continue;
+                }
+                sqlx::query(
+                    "INSERT INTO glossary_term_objectives (glossary_term_id, learning_objective_id, relation) VALUES (?, ?, ?)",
+                )
+                .bind(&term.id)
+                .bind(&objective.learning_objective_id)
+                .bind(&objective.relation)
+                .execute(&mut *transaction)
+                .await?;
+            }
         }
 
-        for question in seed.questions {
+        for cluster in &seed.confusion_clusters {
             sqlx::query(
-                "INSERT INTO questions (id, course_id, learning_objective_id, prompt, question_type, origin, points, explanation, source_label, source_url, source_section) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO confusion_clusters (id, course_id, title, note, origin) VALUES (?, ?, ?, ?, ?)",
+            )
+            .bind(&cluster.id)
+            .bind(&cluster.course_id)
+            .bind(&cluster.title)
+            .bind(&cluster.note)
+            .bind(&cluster.origin)
+            .execute(&mut *transaction)
+            .await?;
+
+            for member in &cluster.members {
+                if !existing_term_ids.contains(&member.glossary_term_id) {
+                    continue;
+                }
+                sqlx::query(
+                    "INSERT INTO confusion_cluster_members (cluster_id, glossary_term_id, position, distinction) VALUES (?, ?, ?, ?)",
+                )
+                .bind(&cluster.id)
+                .bind(&member.glossary_term_id)
+                .bind(member.position)
+                .bind(&member.distinction)
+                .execute(&mut *transaction)
+                .await?;
+            }
+        }
+
+        for question in &seed.questions {
+            sqlx::query(
+                "INSERT INTO questions (id, course_id, learning_objective_id, prompt, question_type, origin, points, explanation, source_label, source_url, source_section) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET course_id = excluded.course_id, learning_objective_id = excluded.learning_objective_id, prompt = excluded.prompt, question_type = excluded.question_type, origin = excluded.origin, points = excluded.points, explanation = excluded.explanation, source_label = excluded.source_label, source_url = excluded.source_url, source_section = excluded.source_section, review_status = excluded.review_status, difficulty = excluded.difficulty",
             )
             .bind(&question.id)
             .bind(&question.course_id)
@@ -188,9 +307,9 @@ impl Database {
             .execute(&mut *transaction)
             .await?;
 
-            for option in question.options {
+            for option in &question.options {
                 sqlx::query(
-                    "INSERT INTO question_options (id, question_id, position, text, is_correct, feedback, misconception) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO question_options (id, question_id, position, text, is_correct, feedback, misconception) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET question_id = excluded.question_id, position = excluded.position, text = excluded.text, is_correct = excluded.is_correct, feedback = excluded.feedback, misconception = excluded.misconception",
                 )
                 .bind(&option.id)
                 .bind(&question.id)
@@ -203,6 +322,14 @@ impl Database {
                 .await?;
             }
         }
+
+        sqlx::query(
+            "INSERT INTO content_versions (id, corpus_version, installed_at) VALUES (1, ?, ?) ON CONFLICT(id) DO UPDATE SET corpus_version = excluded.corpus_version, installed_at = excluded.installed_at",
+        )
+        .bind(&seed.corpus_version)
+        .bind(Utc::now().to_rfc3339())
+        .execute(&mut *transaction)
+        .await?;
 
         transaction.commit().await?;
         Ok(())
@@ -836,9 +963,13 @@ fn fts_query(input: &str) -> String {
 
 #[derive(Debug, Deserialize)]
 struct Seed {
+    #[serde(default)]
+    corpus_version: String,
     courses: Vec<SeedCourse>,
     glossary: Vec<SeedGlossary>,
     questions: Vec<SeedQuestion>,
+    #[serde(default)]
+    confusion_clusters: Vec<SeedCluster>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -886,6 +1017,47 @@ struct SeedGlossary {
     source_label: String,
     source_url: String,
     courses: Vec<String>,
+    #[serde(default)]
+    term_version: String,
+    #[serde(default)]
+    reference: String,
+    #[serde(default)]
+    synonyms: Vec<String>,
+    #[serde(default)]
+    abbreviations: Vec<String>,
+    #[serde(default)]
+    see_also: Vec<SeedSeeAlso>,
+    #[serde(default)]
+    objectives: Vec<SeedGlossaryObjective>,
+}
+
+#[derive(Debug, Deserialize)]
+struct SeedSeeAlso {
+    value: String,
+    term_id: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct SeedGlossaryObjective {
+    learning_objective_id: String,
+    relation: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct SeedCluster {
+    id: String,
+    course_id: String,
+    title: String,
+    note: String,
+    origin: String,
+    members: Vec<SeedClusterMember>,
+}
+
+#[derive(Debug, Deserialize)]
+struct SeedClusterMember {
+    glossary_term_id: String,
+    position: i64,
+    distinction: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -1038,22 +1210,12 @@ mod tests {
     #[tokio::test]
     async fn glossary_terms_carry_links_and_glossary_fields() {
         let database = Database::in_memory().await.unwrap();
-        for (kind, value, target) in [
-            ("synonym", "fault", None),
-            ("abbreviation", "DEF", None),
-            ("see_also", "failure", Some("glossary-failure")),
-            ("see_also", "test suite", None),
-        ] {
-            sqlx::query(
-                "INSERT INTO glossary_term_links (glossary_term_id, kind, value, target_term_id) VALUES ('glossary-defect', ?, ?, ?)",
-            )
-            .bind(kind)
-            .bind(value)
-            .bind(target)
-            .execute(&database.pool)
-            .await
-            .unwrap();
-        }
+        sqlx::query(
+            "INSERT INTO glossary_term_links (glossary_term_id, kind, value, target_term_id) VALUES ('glossary-defect', 'see_also', 'not installed', NULL)",
+        )
+        .execute(&database.pool)
+        .await
+        .unwrap();
 
         let terms = database
             .glossary(Some("ctfl-4"), Some("defect"))
@@ -1064,14 +1226,16 @@ mod tests {
             .find(|term| term.id == "glossary-defect")
             .expect("Begriff 'defect' fehlt im Seed");
 
-        assert_eq!(defect.synonyms, vec!["fault"]);
-        assert_eq!(defect.abbreviations, vec!["DEF"]);
-        assert_eq!(defect.see_also.len(), 2);
+        assert_eq!(defect.term_version, "3");
+        assert_eq!(defect.reference, "After ISO 24765");
+        assert_eq!(defect.synonyms, vec!["bug", "fault", "flaw"]);
+        assert!(defect.abbreviations.is_empty());
+        assert_eq!(defect.see_also.len(), 3);
         // Ein nicht installierter Zielbegriff bleibt als Wortlaut erhalten.
         let unresolved = defect
             .see_also
             .iter()
-            .find(|link| link.value == "test suite")
+            .find(|link| link.value == "not installed")
             .unwrap();
         assert!(unresolved.term_id.is_none());
         assert_eq!(
@@ -1084,45 +1248,27 @@ mod tests {
         );
 
         // Begriffe ohne Beziehungen bleiben leer statt zu fehlen.
-        let other = terms.iter().find(|term| term.id != "glossary-defect");
-        if let Some(other) = other {
-            assert!(other.synonyms.is_empty());
-            assert!(other.see_also.is_empty());
-        }
+        let terms = database
+            .glossary(Some("ctfl-4"), Some("test basis"))
+            .await
+            .unwrap();
+        let test_basis = terms
+            .iter()
+            .find(|term| term.id == "glossary-test-basis")
+            .unwrap();
+        assert!(test_basis.synonyms.is_empty());
+        assert!(test_basis.see_also.is_empty());
     }
 
     #[tokio::test]
     async fn confusion_clusters_are_read_in_member_order() {
         let database = Database::in_memory().await.unwrap();
-        sqlx::query(
-            "INSERT INTO confusion_clusters (id, course_id, title, note, origin) VALUES ('ctfl-cluster-error', 'ctfl-4', 'Fehler, Fehlerzustand, Fehlerwirkung', 'Kernabgrenzung des Foundation Level.', 'editorial')",
-        )
-        .execute(&database.pool)
-        .await
-        .unwrap();
-        for (position, term_id, distinction) in [
-            (
-                2,
-                "glossary-defect",
-                "Der Fehlerzustand im Arbeitsergebnis.",
-            ),
-            (1, "glossary-error", "Die menschliche Handlung."),
-            (3, "glossary-failure", "Das beobachtbare Verhalten."),
-        ] {
-            sqlx::query(
-                "INSERT INTO confusion_cluster_members (cluster_id, glossary_term_id, position, distinction) VALUES ('ctfl-cluster-error', ?, ?, ?)",
-            )
-            .bind(term_id)
-            .bind(position)
-            .bind(distinction)
-            .execute(&database.pool)
-            .await
-            .unwrap();
-        }
-
         let clusters = database.confusion_clusters("ctfl-4").await.unwrap();
-        assert_eq!(clusters.len(), 1);
-        let cluster = &clusters[0];
+        assert_eq!(clusters.len(), 5);
+        let cluster = clusters
+            .iter()
+            .find(|cluster| cluster.id == "ctfl-cluster-error-defect-failure")
+            .unwrap();
         assert_eq!(cluster.origin, ContentOrigin::Editorial);
         assert_eq!(
             cluster
@@ -1130,7 +1276,20 @@ mod tests {
                 .iter()
                 .map(|member| member.term_id.as_str())
                 .collect::<Vec<_>>(),
-            vec!["glossary-error", "glossary-defect", "glossary-failure"]
+            vec![
+                "glossary-error",
+                "glossary-defect",
+                "glossary-failure",
+                "glossary-root-cause"
+            ]
+        );
+        assert_eq!(
+            cluster
+                .members
+                .iter()
+                .map(|member| member.position)
+                .collect::<Vec<_>>(),
+            vec![1, 2, 3, 4]
         );
         assert!(!cluster.members[0].definition.is_empty());
         assert!(
@@ -1140,6 +1299,103 @@ mod tests {
                 .unwrap()
                 .is_empty()
         );
+    }
+
+    #[tokio::test]
+    async fn glossary_objectives_contain_both_relations() {
+        let database = Database::in_memory().await.unwrap();
+        for relation in ["chapter_keyword", "objective_title"] {
+            let count: i64 = sqlx::query_scalar(
+                "SELECT COUNT(*) FROM glossary_term_objectives WHERE relation = ?",
+            )
+            .bind(relation)
+            .fetch_one(&database.pool)
+            .await
+            .unwrap();
+            assert!(count > 0, "Relation {relation} fehlt");
+        }
+    }
+
+    #[tokio::test]
+    async fn installing_the_same_content_twice_does_not_duplicate_rows() {
+        let database = Database::in_memory().await.unwrap();
+        let before = (
+            sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM glossary_terms")
+                .fetch_one(&database.pool)
+                .await
+                .unwrap(),
+            sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM glossary_term_links")
+                .fetch_one(&database.pool)
+                .await
+                .unwrap(),
+            sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM confusion_cluster_members")
+                .fetch_one(&database.pool)
+                .await
+                .unwrap(),
+        );
+
+        database.install_content().await.unwrap();
+
+        let after = (
+            sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM glossary_terms")
+                .fetch_one(&database.pool)
+                .await
+                .unwrap(),
+            sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM glossary_term_links")
+                .fetch_one(&database.pool)
+                .await
+                .unwrap(),
+            sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM confusion_cluster_members")
+                .fetch_one(&database.pool)
+                .await
+                .unwrap(),
+        );
+        assert_eq!(after, before);
+    }
+
+    #[tokio::test]
+    async fn reinstalling_content_preserves_attempts_and_updates_questions() {
+        let database = Database::in_memory().await.unwrap();
+        let question = database.next_question("ctfl-4", None).await.unwrap();
+        let original_prompt = question.prompt.clone();
+        let result = database
+            .submit_attempt(
+                &question.id,
+                AttemptSubmission {
+                    selected_option_ids: vec!["ctfl-q1-o2".into()],
+                    confidence: AnswerConfidence::Sure,
+                    reasoning_choice: ReasoningChoice::Recalled,
+                    reasoning: String::new(),
+                },
+            )
+            .await
+            .unwrap();
+
+        sqlx::query("UPDATE questions SET prompt = 'Veraltet' WHERE id = ?")
+            .bind(&question.id)
+            .execute(&database.pool)
+            .await
+            .unwrap();
+        sqlx::query("UPDATE content_versions SET corpus_version = 'veraltet'")
+            .execute(&database.pool)
+            .await
+            .unwrap();
+
+        database.install_content().await.unwrap();
+
+        let attempt_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM attempts WHERE id = ?")
+            .bind(&result.attempt_id)
+            .fetch_one(&database.pool)
+            .await
+            .unwrap();
+        let installed_prompt: String =
+            sqlx::query_scalar("SELECT prompt FROM questions WHERE id = ?")
+                .bind(&question.id)
+                .fetch_one(&database.pool)
+                .await
+                .unwrap();
+        assert_eq!(attempt_count, 1);
+        assert_eq!(installed_prompt, original_prompt);
     }
 
     #[test]

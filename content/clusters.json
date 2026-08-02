@@ -1,0 +1,98 @@
+{
+  "_comment": "Redaktionell gepflegte Verwechslungscluster. Diese Datei wird von keinem Werkzeug überschrieben. tools/import_content.py liest sie, prüft jedes Mitglied gegen das Glossar und übernimmt sie nach content/seed.json. Die Abgrenzungssätze sind eigene redaktionelle Formulierungen und ersetzen nicht die offizielle Definition.",
+  "course_id": "ctfl-4",
+  "origin": "editorial",
+  "clusters": [
+    {
+      "id": "ctfl-cluster-error-defect-failure",
+      "title": "Fehlhandlung, Fehlerzustand, Fehlerwirkung, Grundursache",
+      "note": "Die Kette von der menschlichen Handlung bis zum sichtbaren Verhalten. Prüfungsfragen benennen einen Punkt der Kette und fragen nach einem anderen.",
+      "members": [
+        {
+          "term": "error",
+          "distinction": "Die menschliche Handlung, die zu einem falschen Ergebnis führt."
+        },
+        {
+          "term": "defect",
+          "distinction": "Der Mangel im Arbeitsergebnis selbst, auch wenn er nie auffällt."
+        },
+        {
+          "term": "failure",
+          "distinction": "Das nach außen sichtbare Fehlverhalten bei der Ausführung."
+        },
+        {
+          "term": "root cause",
+          "distinction": "Die zugrunde liegende Ursache, deren Beseitigung künftige Fehlerzustände dieser Art verhindert."
+        }
+      ]
+    },
+    {
+      "id": "ctfl-cluster-verification-validation",
+      "title": "Verifizierung und Validierung",
+      "note": "Beide bestätigen Erfüllung, aber gegen unterschiedliche Maßstäbe.",
+      "members": [
+        {
+          "term": "verification",
+          "distinction": "Prüfung gegen die festgelegten Anforderungen: Wurde das Produkt richtig gebaut?"
+        },
+        {
+          "term": "validation",
+          "distinction": "Prüfung gegen den beabsichtigten Gebrauch: Wurde das richtige Produkt gebaut?"
+        }
+      ]
+    },
+    {
+      "id": "ctfl-cluster-test-artifacts",
+      "title": "Testbedingung, Testfall, Testablauf, Testsuite",
+      "note": "Vier Ebenen desselben Arbeitsergebnisses, von der Ableitungsgrundlage bis zur Zusammenstellung für einen Testlauf.",
+      "members": [
+        {
+          "term": "test condition",
+          "distinction": "Der prüfbare Aspekt, aus dem Testfälle erst abgeleitet werden."
+        },
+        {
+          "term": "test case",
+          "distinction": "Die einzelne Prüfung mit Vorbedingungen, Eingaben und erwartetem Ergebnis."
+        },
+        {
+          "term": "test procedure",
+          "distinction": "Die Ausführungsreihenfolge mehrerer Testfälle."
+        },
+        {
+          "term": "test suite",
+          "distinction": "Die Zusammenstellung von Testfällen oder Testabläufen für einen konkreten Testlauf."
+        }
+      ]
+    },
+    {
+      "id": "ctfl-cluster-monitoring-control",
+      "title": "Testüberwachung und Teststeuerung",
+      "note": "Beobachten gegenüber Eingreifen. Die Steuerung setzt die Überwachung voraus.",
+      "members": [
+        {
+          "term": "test monitoring",
+          "distinction": "Fortlaufendes Erheben und Berichten des Ist-Zustands gegenüber dem Plan."
+        },
+        {
+          "term": "test control",
+          "distinction": "Das korrigierende Eingreifen, das aus der Beobachtung folgt."
+        }
+      ]
+    },
+    {
+      "id": "ctfl-cluster-testing-debugging",
+      "title": "Testen und Debugging",
+      "note": "Unterschiedliche Ziele und unterschiedliche Verantwortliche. Debugging folgt dem Testen, ist aber nicht Teil davon.",
+      "members": [
+        {
+          "term": "testing",
+          "distinction": "Zielt darauf, Fehlerwirkungen zu finden und Qualität zu bewerten."
+        },
+        {
+          "term": "debugging",
+          "distinction": "Zielt darauf, die Ursache einer gefundenen Fehlerwirkung zu lokalisieren und zu beheben."
+        }
+      ]
+    }
+  ]
+}

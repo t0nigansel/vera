@@ -75,7 +75,8 @@ Additiv. Bestehende Lernhistorie bleibt erhalten.
 | --- | --- | --- |
 | `0003_glossary_model.sql` | (a) | `glossary_terms.term_version`, `glossary_terms.reference`, `glossary_term_links`, `confusion_clusters`, `confusion_cluster_members`, `glossary_term_objectives` |
 | `0004_attempt_reasoning.sql` | (b) | `attempts.reasoning_choice` |
-| `0005_term_training.sql` | (d) | `term_attempts` |
+| `0005_content_version.sql` | (c) | `content_versions` |
+| `0006_term_training.sql` | (d) | `term_attempts` |
 
 `attempts.confidence` und `attempts.next_review_at` bestehen bereits seit `0002_adaptive_learning.sql`.
 
@@ -114,9 +115,15 @@ Erfasst wird damit auch der Fall „richtig, aber durch Ausschluss", den eine Tr
 
 Die Begründungsauswahl wird zusammen mit der Sicherheitsangabe erhoben, also nach der Wahl der Antwortoption und vor der Auflösung. Vision.md sagt „nach der Antwort"; sobald das Ergebnis sichtbar ist, wäre die Angabe durch das Ergebnis verfälscht. Die Angabe bleibt freiwillig — Pflicht sind nur Auswahl und Sicherheit.
 
-### (c) Import und Seed
+### (c) Import und Seed — erledigt
 
 `import_content.py` liefert die neuen Glossarfelder, liest `content/clusters.json`, berechnet die Begriff→Lernziel-Kanten und schreibt alles nach `seed.json`. `persistence` importiert sie und behandelt eine geänderte Corpusversion gemäß Entscheidung 5. Der Importer bleibt LLM-frei und idempotent.
+
+Ergebnis: 98 Begriffe (97 Syllabus-Keywords plus `test suite` als Cluster-Mitglied), 5 Cluster mit 14 Mitgliedern, 86 Beziehungen, davon 16 aufgelöste und 20 offene See-also-Kanten, sowie 1413 Begriff→Lernziel-Kanten (1340 `chapter_keyword`, 73 `objective_title`). Corpusversion `ctfl-4.0.1-glossary-4.7.2-6bed28403813`, abgeleitet aus einem SHA-256 über den Seed-Inhalt — sie ändert sich genau dann, wenn sich der Inhalt ändert.
+
+Aus `seed_if_empty` wurde `install_content`. Aktualisiert wird per Upsert, gelöscht werden nur reine Ableitungstabellen. Das ist kein Stilfrage: `attempts.question_id` hat `ON DELETE CASCADE`, ein Neuaufbau über `DELETE FROM questions` würde die Lernhistorie stillschweigend mitnehmen. Belegt durch `reinstalling_content_preserves_attempts_and_updates_questions` und zusätzlich an einer echten Bestandsdatenbank geprüft: 7 Übungsversuche vor und nach dem Inhaltswechsel.
+
+Begriffe und Lernziele, die ein neuer Corpus nicht mehr enthält, bleiben als Altbestand stehen. Die Lernhistorie hat Vorrang vor einem aufgeräumten Bestand.
 
 ### (d) Begriffstraining-Backend
 
