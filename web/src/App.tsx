@@ -1106,8 +1106,8 @@ function GlossaryLibrary({ courseId }: { courseId?: string }) {
         <label className="search-field"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Begriff suchen …" /></label>
       </div>
       <div className="content-note">
-        <strong>Starter-Snapshot</strong>
-        <span>Aktuell sind redaktionelle Startertexte mit Links zum offiziellen Glossar installiert. Der vollständige offizielle Snapshot folgt über den versionierten Import.</span>
+        <strong>Kursrelevanter Ausschnitt</strong>
+        <span>Installiert sind die für die Zertifizierung relevanten Begriffe des offiziellen Glossars, nicht der Gesamtbestand. Geübt wird, was der Syllabus als Keyword führt, ergänzt um die Mitglieder der Verwechslungscluster.</span>
       </div>
       {error && <ErrorBanner message={error} />}
       {loading ? <LoadingState label="Glossar wird durchsucht …" /> : (

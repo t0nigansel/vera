@@ -16,19 +16,21 @@ Der Inhaltsimport ist abgeschlossen und LLM-frei:
 | --- | --- |
 | `content/generated/glossary.json` | 651 Begriffe mit Synonymen, Abkürzungen, See-also, Reference |
 | `content/generated/ctfl.json` | 6 Kapitel, 64 Learning Objectives, Keyword-Listen |
-| `content/seed.json` | 97 CTFL-relevante Begriffe, 8 Kapitel, 68 Learning Objectives |
+| `content/seed.json` | 98 CTFL-relevante Begriffe, 8 Kapitel, 68 Learning Objectives, 5 Verwechslungscluster |
+| `content/clusters.json` | redaktionell gepflegt, 5 Cluster mit 14 Mitgliedern |
 
-Erzeugt von `tools/import_content.py` aus den PDF-Quellen in `content/`. Der Importer bleibt regelbasiert, wiederholbar und ohne Modellaufruf.
+Erzeugt von `tools/import_content.py` aus den PDF-Quellen in `content/`, außer `clusters.json` — die wird gelesen, nie geschrieben. Der Importer bleibt regelbasiert, wiederholbar und ohne Modellaufruf.
 
-**Das Datenmodell nutzt die neuen Glossarfelder noch nicht.** `glossary_terms` kennt weder `term_version` noch Synonyme, Abkürzungen, See-also oder Reference; Verwechslungscluster und die Zuordnung Begriff → Learning Objective existieren nicht. Das schließen die Meilensteine (a) bis (f).
+**Die Meilensteine (a) bis (f) sind abgeschlossen.** Das Datenmodell führt Begriffsversion, Reference, Synonyme, Abkürzungen und See-also-Beziehungen, kennt Verwechslungscluster und die Zuordnung Begriff → Learning Objective. Antwortdiagnose und Wiederholungsplanung liegen als eigene Module im domain-Crate, das Begriffstraining ist über vier Abfragerichtungen bedienbar.
 
-### Bekannte Stolperstelle beim Inhaltsupdate
+### Inhaltsupdate
 
-`seed_if_empty` importiert nur in eine leere Datenbank ([crates/persistence/src/lib.rs:59-64](crates/persistence/src/lib.rs#L59-L64)). Nach einem Lauf von `import_content.py` liefert eine bestehende Datenbank deshalb weiter den alten Bestand aus, und ein noch laufender Serverprozess hält zusätzlich seine geöffnete Datei fest. Behelf bis Meilenstein (c):
+`install_content` vergleicht die Corpusversion aus `seed.json` mit der installierten und aktualisiert bei Abweichung per Upsert. Ein Lauf von `import_content.py` genügt also; beim nächsten Serverstart zieht die Datenbank nach, ohne dass die Lernhistorie verloren geht.
+
+Läuft der Server noch, hält er seine geöffnete Datenbankdatei weiter fest und liefert den alten Bestand aus. Vor dem Neustart deshalb beenden:
 
 ```bash
 pkill -f 'target/debug/server'
-mv data/learnistqb.db data/learnistqb.db.alt
 cargo run -p server
 ```
 
@@ -65,7 +67,9 @@ Reihenfolge der Antwortoptionen und Position der richtigen Option werden aus ein
 
 ### 5. Seed-Import wird versionierbar
 
-Quality.md fordert „Import derselben Corpusversion ohne Duplikate". `seed.json` erhält deshalb eine Corpusversion. Weicht sie von der installierten ab, werden die Inhaltstabellen neu aufgebaut; `attempts` und `term_attempts` bleiben erhalten. Damit wird ein Inhaltsupdate ein normaler Vorgang statt eines manuellen Eingriffs.
+Quality.md fordert „Import derselben Corpusversion ohne Duplikate". `seed.json` erhält deshalb eine Corpusversion. Weicht sie von der installierten ab, wird der Inhalt per Upsert aktualisiert; vollständig neu aufgebaut werden nur die reinen Ableitungstabellen. `attempts` und `term_attempts` bleiben unangetastet. Damit wird ein Inhaltsupdate ein normaler Vorgang statt eines manuellen Eingriffs.
+
+Ursprünglich war ein Neuaufbau über `DELETE` geplant. Das geht nicht: `attempts.question_id` verweist mit `ON DELETE CASCADE` auf `questions`, ein Neuaufbau nähme die Lernhistorie stillschweigend mit.
 
 ## Migrationen
 
@@ -77,10 +81,11 @@ Additiv. Bestehende Lernhistorie bleibt erhalten.
 | `0004_attempt_reasoning.sql` | (b) | `attempts.reasoning_choice` |
 | `0005_content_version.sql` | (c) | `content_versions` |
 | `0006_term_training.sql` | (d) | `term_attempts` |
+| `0007_commitments_and_mock_exams.sql` | — | `commitments`, `commitment_revisions`, `mock_exams`, `mock_exam_questions`, `questions.reserved_for_exam`; entstanden außerhalb dieser Meilensteine, siehe offene Punkte |
 
 `attempts.confidence` und `attempts.next_review_at` bestehen bereits seit `0002_adaptive_learning.sql`.
 
-`glossary_term_links` führt Synonyme, Abkürzungen und See-also-Beziehungen in einer Tabelle mit `kind`-Unterscheidung. Der Wortlaut aus dem Glossar wird immer gespeichert; `target_term_id` bleibt leer, solange der Zielbegriff nicht installiert ist. Von 36 See-also-Kanten der 97 CTFL-Begriffe lösen sich derzeit 16 innerhalb des installierten Bestands auf — die Distraktorauswahl braucht deshalb den Kapitel-Fallback.
+`glossary_term_links` führt Synonyme, Abkürzungen und See-also-Beziehungen in einer Tabelle mit `kind`-Unterscheidung. Der Wortlaut aus dem Glossar wird immer gespeichert; `target_term_id` bleibt leer, solange der Zielbegriff nicht installiert ist. Von 36 See-also-Kanten der installierten 98 CTFL-Begriffe lösen sich derzeit 16 innerhalb des Bestands auf — die Distraktorauswahl braucht deshalb den Kapitel-Fallback.
 
 `term_attempts` ist im ursprünglichen Auftrag nicht genannt, aber ohne sie kann das Begriffstraining kein Ergebnis festhalten und die Wiederholungsplanung nichts über Begriffe planen.
 
@@ -169,9 +174,10 @@ Tab „Begriffe" im Kurs-Arbeitsbereich mit Richtungswahl, Sicherheitsangabe und
 
 ## Offene Punkte
 
+- Migration `0007` legt Tabellen für Commitments und Probetests an und ergänzt `questions.reserved_for_exam`. Sie wendet sich sauber an, aber **kein Code liest oder schreibt diese Tabellen**. Insbesondere filtert `next_question` nicht auf `reserved_for_exam = 0`: Für den Probetest reservierte Fragen erschienen damit weiterhin im Übungsmodus, was ihre Reservierung entwertet. Das ist zu schließen, bevor der Probetest gebaut wird.
 - Das Prüfungsdatum liegt nur im Browser (`localStorage`). Solange der Server es nicht kennt, bleibt `compress_for_exam` ohne Wirkung und der Lernplan verdichtet sich vor dem Termin nicht. Die Anbindung braucht eine Schemaänderung und eine Route.
 
 - Die harte Obergrenze `LIMIT 100` in der Glossarabfrage ([crates/persistence/src/lib.rs:316](crates/persistence/src/lib.rs#L316)) schneidet größere Bestände stillschweigend ab.
-- Das Frontend zeigt den Hinweis „Starter-Snapshot" fest verdrahtet an ([web/src/App.tsx:830-832](web/src/App.tsx#L830-L832)), unabhängig vom tatsächlich installierten Bestand.
+- Der Glossarhinweis im Frontend nennt den kursrelevanten Ausschnitt jetzt korrekt, ist aber weiterhin fest verdrahtet und nicht aus dem installierten Bestand abgeleitet.
 - Von 651 Glossarbegriffen sind 97 als CTFL-relevant installiert. Die Abgrenzung folgt Vision.md, ist im Produkt aber nirgends sichtbar.
 - Die Demo-Fragen hängen an echten Lernzielen, sind aber weiterhin ein Starterbestand ohne Stilrichtlinie.

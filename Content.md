@@ -219,6 +219,29 @@ offizielle Glossardefinition
 
 Eine generierte Übersetzung wird ausdrücklich als solche gespeichert und darf eine offizielle deutsche Definition nicht überschreiben.
 
+### Umgesetzter Stand
+
+Gespeichert werden je Begriff die Glossarversion (`term_version`), die Quellenangabe des Glossars (`reference`) sowie Synonyme, Abkürzungen und `see also`-Beziehungen. Die drei Beziehungsarten liegen gemeinsam in `glossary_term_links`, unterschieden über `kind`.
+
+Der Wortlaut einer Beziehung wird immer gespeichert, auch wenn der Zielbegriff nicht installiert ist; `target_term_id` bleibt dann leer. Das ist der Regelfall und kein Mangel: Von den 36 `see also`-Kanten der CTFL-Begriffe zeigen 20 auf Begriffe außerhalb des kursrelevanten Bestands.
+
+### Verwechslungscluster
+
+Cluster sind redaktionell und liegen in `content/clusters.json`. Diese Datei wird von keinem Werkzeug geschrieben. `tools/import_content.py` liest sie, prüft jedes Mitglied gegen das Glossar — ein unbekannter Begriff bricht den Import ab — und übernimmt sie in den Seed.
+
+Je Mitglied wird neben der Position ein redaktioneller Abgrenzungssatz geführt. Er ist kein Ersatz für die offizielle Definition, sondern benennt, wodurch sich dieses Mitglied von den übrigen des Clusters unterscheidet. Im Begriffstraining ist dieser Satz die eigentliche Rückmeldung nach einer Antwort.
+
+Ein Cluster darf Begriffe enthalten, die kein Syllabus-Keyword sind. Sie werden dann zusätzlich in den Seed aufgenommen, damit die Abgrenzung vollständig bleibt.
+
+### Begriff und Learning Objective
+
+Die Zuordnung wird deterministisch abgeleitet, nicht gepflegt, und in `glossary_term_objectives` mit ihrer Herkunft geführt:
+
+- `chapter_keyword` — der Begriff steht in der Keyword-Liste eines Kapitels und gilt damit für alle Lernziele dieses Kapitels,
+- `objective_title` — der Begriff kommt im Wortlaut eines Lernziels vor, geprüft an Wortgrenzen.
+
+Beide Relationen können für dasselbe Paar bestehen. Da die Ableitung reproduzierbar ist, wird sie bei jedem Inhaltsupdate neu gebildet statt fortgeschrieben.
+
 ## Sprachstrategie
 
 Die Benutzeroberfläche und Tutorinteraktion können deutsch sein, auch wenn eine Quelle nur auf Englisch vorliegt.
@@ -342,6 +365,20 @@ Dadurch kann die Anwendung erkennen, ob eine Schwierigkeit im aktuellen Kurs ode
 10. Corpus atomar veröffentlichen.
 
 Eine neue Dokumentversion überschreibt keine alte. Bereits erzeugte Lern- und Modelltraces bleiben auf ihre ursprüngliche Corpusversion beziehbar.
+
+### Umgesetzter Stand
+
+`tools/import_content.py` deckt die Schritte 4 bis 6 ab. Es liest die PDF-Quellen aus `content/`, erzeugt `content/generated/glossary.json` und `content/generated/ctfl.json` und schreibt daraus zusammen mit `content/clusters.json` den Seed `content/seed.json`. Der Lauf ist regelbasiert, ohne Modellaufruf und wiederholbar: Zwei aufeinanderfolgende Läufe erzeugen byte-identische Dateien.
+
+```bash
+python3 tools/import_content.py
+```
+
+Der Seed trägt eine Corpusversion, gebildet aus Kurs- und Glossarversion sowie den ersten Stellen eines SHA-256 über den Seed-Inhalt. Sie ändert sich genau dann, wenn sich der Inhalt ändert, und muss nicht manuell gepflegt werden.
+
+Beim Serverstart vergleicht `install_content` diese Version mit der installierten. Bei Abweichung werden Kurse, Kapitel, Lernziele, Begriffe, Fragen und Antwortoptionen per Upsert aktualisiert; vollständig neu aufgebaut werden nur die reinen Ableitungstabellen — Kurszuordnungen, Begriffsbeziehungen, Cluster, Begriff-Lernziel-Kanten und der Volltextindex.
+
+Gelöscht wird dabei nichts, was die Lernhistorie trägt. Das ist keine Vorsichtsmaßnahme, sondern notwendig: `attempts.question_id` verweist mit `ON DELETE CASCADE` auf `questions`, ein Neuaufbau über `DELETE` nähme die Versuche des Nutzers stillschweigend mit. Begriffe und Lernziele, die ein neuer Corpus nicht mehr enthält, bleiben deshalb als Altbestand stehen.
 
 ## Rechte und Veröffentlichung
 

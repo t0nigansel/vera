@@ -8,7 +8,33 @@ Die Anwendung verbindet versionierte offizielle Lernquellen, das ISTQB-Glossar, 
 
 Ein ausführbarer MVP-Vertical-Slice ist implementiert. Er umfasst Dashboard, Kursansicht, versionierte Lernziele und Glossareinträge, redaktionell freigegebene und deterministisch bewertete Multiple-Choice-Fragen, Antwortsicherheit, Fehlvorstellungsdiagnose, verteilte Wiederholungen, eine bewusst konservative Prüfungsreife, einen datumsbezogenen Lernplan, FTS5-Retrieval sowie einen quellengebundenen Tutor mit austauschbarem LLM-Provider.
 
-Der mitgelieferte Inhalt ist bewusst ein kleiner, redaktioneller Starterdatensatz für den technischen MVP. Er ersetzt keinen vollständigen, lizenzierten Import der offiziellen ISTQB-Unterlagen. Alle Demo-Lernziele sind als `*-DEMO-*` gekennzeichnet; Links führen zu den offiziellen Originalquellen.
+Die offiziellen CTFL-Inhalte sind importiert: 6 Kapitel, 64 Learning Objectives und die kursrelevanten Glossarbegriffe mit Synonymen, Abkürzungen, `see also`-Beziehungen und Glossarversion. Dazu kommen fünf redaktionell gepflegte Verwechslungscluster.
+
+Der **Fragenbestand** ist weiterhin ein kleiner Starterdatensatz und ersetzt keinen vollständigen Korpus. Der laufende Arbeitsstand steht in [Roadmap.md](Roadmap.md).
+
+## Lernmodi
+
+**Fragen üben.** Eine Frage, sofortiges Feedback, Erklärung je Antwortoption und Quellenangabe. Zusätzlich zwei Angaben des Nutzers, beide ohne Modellkosten: die Sicherheit (sicher, unsicher, geraten) und der Denkweg (Definition erinnert, Regel angewendet, andere ausgeschlossen, aus Erfahrung, geraten).
+
+Daraus entstehen die vier Fälle aus [Vision.md](Vision.md) — und ein fünfter, den eine Trefferquote nicht sieht: Wer sicher richtig antwortet, die Antwort aber durch Ausschluss oder Raten gefunden hat, gilt nicht als sicher und bekommt ein kürzeres Wiederholungsintervall.
+
+**Begriffstraining.** Vier Abfragerichtungen: Begriff → Definition, Definition → Begriff, Szenario → Begriff und Begriff → Thema. Die Distraktoren stammen bevorzugt aus demselben Verwechslungscluster, sonst aus verwandten Begriffen, sonst aus demselben Kapitel — geübt wird die Abgrenzung, nicht das Wiedererkennen. Nach der Antwort erscheint der redaktionelle Abgrenzungssatz des Clusters.
+
+Die Auswahl ist vollständig deterministisch und ohne Zufallsgenerator; die Lösung verlässt den Server nicht, sondern wird beim Absenden durch erneutes Erzeugen derselben Übung geprüft.
+
+**Wiederholung.** Kein eigener Modus, sondern ein Planer über beide Lernformen. Was als sichere Beherrschung zählt, rückt auf der Leiter 7, 14, 30, 60 Tage vor; was wackelte, kommt früher wieder. Fällige Wiederholungen haben Vorrang vor neuem Stoff, der zuletzt beantwortete Eintrag wird jedoch übersprungen, solange es Alternativen gibt.
+
+## Inhalte importieren
+
+```bash
+python3 tools/import_content.py   # benötigt pypdf
+```
+
+Der Importer liest die PDF-Quellen aus `content/`, erzeugt die Dateien unter `content/generated/` und schreibt `content/seed.json`. Er ist regelbasiert, wiederholbar und verwendet kein Sprachmodell. Die Verwechslungscluster in `content/clusters.json` werden gelesen, nie überschrieben.
+
+Die offiziellen PDF-Quelldokumente sind aus Rechtegründen nicht Teil des Repositorys und müssen lokal in `content/` liegen.
+
+Beim nächsten Serverstart erkennt die Anwendung die geänderte Corpusversion und aktualisiert die Datenbank. Die Lernhistorie bleibt dabei erhalten.
 
 ## Erste unterstützte Kurse
 
@@ -94,12 +120,16 @@ Die Persistenztests verwenden isolierte temporäre SQLite-Datenbanken. Der Fake-
 
 ## Weiterer Entwicklungsablauf
 
-1. Nutzungsrechte klären und vollständige, versionierte Kurs- und Glossarimporte bauen.
-2. Embeddingprovider und Vektorsuche ergänzen; FTS5 bleibt als lokaler Fallback bestehen.
-3. offene Antworten mit Rubrics und nachvollziehbarer KI-Unterstützung ergänzen.
-4. vollständige Prüfungssimulation und Kalibrierung gegen freiwillig gemeldete Prüfungsergebnisse ergänzen.
-5. Replay-Provider und fachliche LLM-Evaluationen erweitern.
-6. lokale Distribution und späteren gehosteten Betrieb vorbereiten.
+1. Fragenbestand gegen eine verbindliche Stilrichtlinie aufbauen; er ist die kritischste Ressource des Produkts.
+2. Nutzungsrechte je Quelldokument klären.
+3. Prüfungsdatum serverseitig führen, damit sich der Wiederholungsplan vor dem Termin verdichtet.
+4. offene Antworten mit Rubrics und nachvollziehbarer KI-Unterstützung ergänzen.
+5. vollständige Prüfungssimulation aus reservierten, nie geübten Fragen ergänzen.
+6. Embeddingprovider und Vektorsuche ergänzen; FTS5 bleibt als lokaler Fallback bestehen.
+7. Replay-Provider und fachliche LLM-Evaluationen erweitern.
+8. lokale Distribution und späteren gehosteten Betrieb vorbereiten.
+
+Der laufende Arbeitsstand mit Entscheidungen und offenen Punkten steht in [Roadmap.md](Roadmap.md).
 
 ## Lizenz und Inhalte
 
