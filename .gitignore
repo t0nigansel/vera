@@ -1,0 +1,14 @@
+/target/
+/web/node_modules/
+/web/dist/
+/web/*.tsbuildinfo
+/.env
+# Lokale Lernhistorie und Sicherungskopien davon. Das Verzeichnis wird beim
+# Serverstart angelegt.
+/data/
+.DS_Store
+
+# Offizielle ISTQB-Quelldokumente. Die Nutzungsrechte für eine Weiterverbreitung
+# sind ungeklärt (siehe Content.md), deshalb bleiben sie lokal. Der Import in
+# tools/import_content.py erwartet sie in content/.
+/content/*.pdf

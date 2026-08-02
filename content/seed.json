@@ -1,0 +1,2307 @@
+{
+  "courses": [
+    {
+      "id": "ctfl-4",
+      "code": "CTFL",
+      "name": "Certified Tester Foundation Level",
+      "version": "4.0.1",
+      "description": "Grundlagen des Softwaretestens, Testverfahren, Testmanagement und Werkzeugunterstützung.",
+      "exam_questions": 40,
+      "passing_score": 26,
+      "exam_minutes": 60,
+      "chapters": [
+        {
+          "id": "ctfl-ch1",
+          "position": 1,
+          "title": "Fundamentals of Testing",
+          "description": "coverage, debugging, defect, error, failure, quality, quality assurance, root cause, test analysis, test basis, test case, test completion",
+          "objectives": [
+            {
+              "id": "ctfl-lo-1-1-1",
+              "code": "FL-1.1.1",
+              "k_level": "K1",
+              "title": "Identify typical test objectives",
+              "summary": "Identify typical test objectives",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.1 What is Testing?"
+            },
+            {
+              "id": "ctfl-lo-1-1-2",
+              "code": "FL-1.1.2",
+              "k_level": "K2",
+              "title": "Differentiate testing from debugging",
+              "summary": "Differentiate testing from debugging",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.1 What is Testing?"
+            },
+            {
+              "id": "ctfl-lo-1-2-1",
+              "code": "FL-1.2.1",
+              "k_level": "K2",
+              "title": "Exemplify why testing is necessary",
+              "summary": "Exemplify why testing is necessary",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.2 Why is Testing Necessary?"
+            },
+            {
+              "id": "ctfl-lo-1-2-2",
+              "code": "FL-1.2.2",
+              "k_level": "K1",
+              "title": "Recall the relation between testing and quality assurance",
+              "summary": "Recall the relation between testing and quality assurance",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.2 Why is Testing Necessary?"
+            },
+            {
+              "id": "ctfl-lo-1-2-3",
+              "code": "FL-1.2.3",
+              "k_level": "K2",
+              "title": "Distinguish between root cause, error, defect, and failure",
+              "summary": "Distinguish between root cause, error, defect, and failure",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.2 Why is Testing Necessary?"
+            },
+            {
+              "id": "ctfl-lo-1-3-1",
+              "code": "FL-1.3.1",
+              "k_level": "K2",
+              "title": "Explain the seven testing principles",
+              "summary": "Explain the seven testing principles",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.3 Testing Principles"
+            },
+            {
+              "id": "ctfl-lo-1-4-1",
+              "code": "FL-1.4.1",
+              "k_level": "K2",
+              "title": "Explain the different test activities and related tasks",
+              "summary": "Explain the different test activities and related tasks",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.4 Test Activities, Testware and Test Roles"
+            },
+            {
+              "id": "ctfl-lo-1-4-2",
+              "code": "FL-1.4.2",
+              "k_level": "K2",
+              "title": "Explain the impact of context on the test process",
+              "summary": "Explain the impact of context on the test process",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.4 Test Activities, Testware and Test Roles"
+            },
+            {
+              "id": "ctfl-lo-1-4-3",
+              "code": "FL-1.4.3",
+              "k_level": "K2",
+              "title": "Differentiate the testware that supports the test activities",
+              "summary": "Differentiate the testware that supports the test activities",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.4 Test Activities, Testware and Test Roles"
+            },
+            {
+              "id": "ctfl-lo-1-4-4",
+              "code": "FL-1.4.4",
+              "k_level": "K2",
+              "title": "Explain the value of maintaining traceability",
+              "summary": "Explain the value of maintaining traceability",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.4 Test Activities, Testware and Test Roles"
+            },
+            {
+              "id": "ctfl-lo-1-4-5",
+              "code": "FL-1.4.5",
+              "k_level": "K2",
+              "title": "Compare the different roles in testing",
+              "summary": "Compare the different roles in testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.4 Test Activities, Testware and Test Roles"
+            },
+            {
+              "id": "ctfl-lo-1-5-1",
+              "code": "FL-1.5.1",
+              "k_level": "K2",
+              "title": "Give examples of the generic skills required for testing",
+              "summary": "Give examples of the generic skills required for testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.5 Essential Skills and Good Practices in Testing"
+            },
+            {
+              "id": "ctfl-lo-1-5-2",
+              "code": "FL-1.5.2",
+              "k_level": "K1",
+              "title": "Recall the advantages of the whole team approach",
+              "summary": "Recall the advantages of the whole team approach",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.5 Essential Skills and Good Practices in Testing"
+            },
+            {
+              "id": "ctfl-lo-1-5-3",
+              "code": "FL-1.5.3",
+              "k_level": "K2",
+              "title": "Distinguish the benefits and drawbacks of independence of testing",
+              "summary": "Distinguish the benefits and drawbacks of independence of testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "1.5 Essential Skills and Good Practices in Testing"
+            }
+          ]
+        },
+        {
+          "id": "ctfl-ch2",
+          "position": 2,
+          "title": "Testing Throughout the Software Development Lifecycle",
+          "description": "acceptance testing, black-box testing, component integration testing, component testing, confirmation testing, functional testing, integration testing, maintenance testing, non-functional testing, regression testing, shift left, system integration testing",
+          "objectives": [
+            {
+              "id": "ctfl-lo-2-1-1",
+              "code": "FL-2.1.1",
+              "k_level": "K2",
+              "title": "Explain the impact of the chosen software development lifecycle on testing",
+              "summary": "Explain the impact of the chosen software development lifecycle on testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "2.1 Testing in the Context of a Software Development Lifecycle"
+            },
+            {
+              "id": "ctfl-lo-2-1-2",
+              "code": "FL-2.1.2",
+              "k_level": "K1",
+              "title": "Recall good testing practices that apply to all software development lifecycles",
+              "summary": "Recall good testing practices that apply to all software development lifecycles",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "2.1 Testing in the Context of a Software Development Lifecycle"
+            },
+            {
+              "id": "ctfl-lo-2-1-3",
+              "code": "FL-2.1.3",
+              "k_level": "K1",
+              "title": "Recall the examples of test-first approaches to development",
+              "summary": "Recall the examples of test-first approaches to development",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "2.1 Testing in the Context of a Software Development Lifecycle"
+            },
+            {
+              "id": "ctfl-lo-2-1-4",
+              "code": "FL-2.1.4",
+              "k_level": "K2",
+              "title": "Summarize how DevOps might have an impact on testing",
+              "summary": "Summarize how DevOps might have an impact on testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "2.1 Testing in the Context of a Software Development Lifecycle"
+            },
+            {
+              "id": "ctfl-lo-2-1-5",
+              "code": "FL-2.1.5",
+              "k_level": "K2",
+              "title": "Explain shift left",
+              "summary": "Explain shift left",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "2.1 Testing in the Context of a Software Development Lifecycle"
+            },
+            {
+              "id": "ctfl-lo-2-1-6",
+              "code": "FL-2.1.6",
+              "k_level": "K2",
+              "title": "Explain how retrospectives can be used as a mechanism for process improvement",
+              "summary": "Explain how retrospectives can be used as a mechanism for process improvement",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "2.1 Testing in the Context of a Software Development Lifecycle"
+            },
+            {
+              "id": "ctfl-lo-2-2-1",
+              "code": "FL-2.2.1",
+              "k_level": "K2",
+              "title": "Distinguish the different test levels",
+              "summary": "Distinguish the different test levels",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "2.2 Test Levels and Test Types"
+            },
+            {
+              "id": "ctfl-lo-2-2-2",
+              "code": "FL-2.2.2",
+              "k_level": "K2",
+              "title": "Distinguish the different test types",
+              "summary": "Distinguish the different test types",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "2.2 Test Levels and Test Types"
+            },
+            {
+              "id": "ctfl-lo-2-2-3",
+              "code": "FL-2.2.3",
+              "k_level": "K2",
+              "title": "Distinguish confirmation testing from regression testing",
+              "summary": "Distinguish confirmation testing from regression testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "2.2 Test Levels and Test Types"
+            },
+            {
+              "id": "ctfl-lo-2-3-1",
+              "code": "FL-2.3.1",
+              "k_level": "K2",
+              "title": "Summarize maintenance testing and its triggers",
+              "summary": "Summarize maintenance testing and its triggers",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "2.3 Maintenance Testing"
+            }
+          ]
+        },
+        {
+          "id": "ctfl-ch3",
+          "position": 3,
+          "title": "Static Testing",
+          "description": "anomaly, dynamic testing, formal review, informal review, inspection, review, static analysis, static testing, technical review, walkthrough",
+          "objectives": [
+            {
+              "id": "ctfl-lo-3-1-1",
+              "code": "FL-3.1.1",
+              "k_level": "K1",
+              "title": "Recognize types of work products that can be examined by static testing",
+              "summary": "Recognize types of work products that can be examined by static testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "3.1 Static Testing Basics"
+            },
+            {
+              "id": "ctfl-lo-3-1-2",
+              "code": "FL-3.1.2",
+              "k_level": "K2",
+              "title": "Explain the value of static testing",
+              "summary": "Explain the value of static testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "3.1 Static Testing Basics"
+            },
+            {
+              "id": "ctfl-lo-3-1-3",
+              "code": "FL-3.1.3",
+              "k_level": "K2",
+              "title": "Compare and contrast static testing and dynamic testing",
+              "summary": "Compare and contrast static testing and dynamic testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "3.1 Static Testing Basics"
+            },
+            {
+              "id": "ctfl-lo-3-2-1",
+              "code": "FL-3.2.1",
+              "k_level": "K1",
+              "title": "Identify the benefits of early and frequent stakeholder feedback",
+              "summary": "Identify the benefits of early and frequent stakeholder feedback",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "3.2 Feedback and Review Process"
+            },
+            {
+              "id": "ctfl-lo-3-2-2",
+              "code": "FL-3.2.2",
+              "k_level": "K2",
+              "title": "Summarize the activities of the review process",
+              "summary": "Summarize the activities of the review process",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "3.2 Feedback and Review Process"
+            },
+            {
+              "id": "ctfl-lo-3-2-3",
+              "code": "FL-3.2.3",
+              "k_level": "K1",
+              "title": "Recall which responsibilities are assigned to the principal roles when performing reviews",
+              "summary": "Recall which responsibilities are assigned to the principal roles when performing reviews",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "3.2 Feedback and Review Process"
+            },
+            {
+              "id": "ctfl-lo-3-2-4",
+              "code": "FL-3.2.4",
+              "k_level": "K2",
+              "title": "Compare and contrast the different review types",
+              "summary": "Compare and contrast the different review types",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "3.2 Feedback and Review Process"
+            },
+            {
+              "id": "ctfl-lo-3-2-5",
+              "code": "FL-3.2.5",
+              "k_level": "K1",
+              "title": "Recall the factors that contribute to a successful review",
+              "summary": "Recall the factors that contribute to a successful review",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "3.2 Feedback and Review Process"
+            }
+          ]
+        },
+        {
+          "id": "ctfl-ch4",
+          "position": 4,
+          "title": "Test Analysis and Design",
+          "description": "acceptance criteria, acceptance test-driven development, black-box test technique, boundary value analysis, branch coverage, checklist-based testing, collaboration-based test approach, coverage, coverage item, decision table testing, equivalence partitioning, error guessing",
+          "objectives": [
+            {
+              "id": "ctfl-lo-4-1-1",
+              "code": "FL-4.1.1",
+              "k_level": "K2",
+              "title": "Distinguish black-box test techniques, white-box test techniques and experience-based test techniques",
+              "summary": "Distinguish black-box test techniques, white-box test techniques and experience-based test techniques",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.1 Test Techniques Overview"
+            },
+            {
+              "id": "ctfl-lo-4-2-1",
+              "code": "FL-4.2.1",
+              "k_level": "K3",
+              "title": "Use equivalence partitioning to derive test cases",
+              "summary": "Use equivalence partitioning to derive test cases",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.2 Black-box Test Techniques"
+            },
+            {
+              "id": "ctfl-lo-4-2-2",
+              "code": "FL-4.2.2",
+              "k_level": "K3",
+              "title": "Use boundary value analysis to derive test cases",
+              "summary": "Use boundary value analysis to derive test cases",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.2 Black-box Test Techniques"
+            },
+            {
+              "id": "ctfl-lo-4-2-3",
+              "code": "FL-4.2.3",
+              "k_level": "K3",
+              "title": "Use decision table testing to derive test cases",
+              "summary": "Use decision table testing to derive test cases",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.2 Black-box Test Techniques"
+            },
+            {
+              "id": "ctfl-lo-4-2-4",
+              "code": "FL-4.2.4",
+              "k_level": "K3",
+              "title": "Use state transition testing to derive test cases",
+              "summary": "Use state transition testing to derive test cases",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.2 Black-box Test Techniques"
+            },
+            {
+              "id": "ctfl-lo-4-3-1",
+              "code": "FL-4.3.1",
+              "k_level": "K2",
+              "title": "Explain statement testing",
+              "summary": "Explain statement testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.3 White-box Test Techniques"
+            },
+            {
+              "id": "ctfl-lo-4-3-2",
+              "code": "FL-4.3.2",
+              "k_level": "K2",
+              "title": "Explain branch testing",
+              "summary": "Explain branch testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.3 White-box Test Techniques"
+            },
+            {
+              "id": "ctfl-lo-4-3-3",
+              "code": "FL-4.3.3",
+              "k_level": "K2",
+              "title": "Explain the value of white-box testing",
+              "summary": "Explain the value of white-box testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.3 White-box Test Techniques"
+            },
+            {
+              "id": "ctfl-lo-4-4-1",
+              "code": "FL-4.4.1",
+              "k_level": "K2",
+              "title": "Explain error guessing",
+              "summary": "Explain error guessing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.4 Experience-based Test Techniques"
+            },
+            {
+              "id": "ctfl-lo-4-4-2",
+              "code": "FL-4.4.2",
+              "k_level": "K2",
+              "title": "Explain exploratory testing",
+              "summary": "Explain exploratory testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.4 Experience-based Test Techniques"
+            },
+            {
+              "id": "ctfl-lo-4-4-3",
+              "code": "FL-4.4.3",
+              "k_level": "K2",
+              "title": "Explain checklist-based testing",
+              "summary": "Explain checklist-based testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.4 Experience-based Test Techniques"
+            },
+            {
+              "id": "ctfl-lo-4-5-1",
+              "code": "FL-4.5.1",
+              "k_level": "K2",
+              "title": "Explain how to write user stories in collaboration with developers and business representatives",
+              "summary": "Explain how to write user stories in collaboration with developers and business representatives",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.5 Collaboration-based Test Approaches"
+            },
+            {
+              "id": "ctfl-lo-4-5-2",
+              "code": "FL-4.5.2",
+              "k_level": "K2",
+              "title": "Classify the different options for writing acceptance criteria",
+              "summary": "Classify the different options for writing acceptance criteria",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.5 Collaboration-based Test Approaches"
+            },
+            {
+              "id": "ctfl-lo-4-5-3",
+              "code": "FL-4.5.3",
+              "k_level": "K3",
+              "title": "Use acceptance test-driven development (ATDD) to derive test cases",
+              "summary": "Use acceptance test-driven development (ATDD) to derive test cases",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "4.5 Collaboration-based Test Approaches"
+            }
+          ]
+        },
+        {
+          "id": "ctfl-ch5",
+          "position": 5,
+          "title": "Managing the Test Activities",
+          "description": "defect management, defect report, entry criteria, exit criteria, product risk, project risk, risk, risk analysis, risk assessment, risk control, risk identification, risk level",
+          "objectives": [
+            {
+              "id": "ctfl-lo-5-1-1",
+              "code": "FL-5.1.1",
+              "k_level": "K2",
+              "title": "Exemplify the purpose and content of a test plan",
+              "summary": "Exemplify the purpose and content of a test plan",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.1 Test Planning"
+            },
+            {
+              "id": "ctfl-lo-5-1-2",
+              "code": "FL-5.1.2",
+              "k_level": "K1",
+              "title": "Recognize how a tester adds value to iteration and release planning",
+              "summary": "Recognize how a tester adds value to iteration and release planning",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.1 Test Planning"
+            },
+            {
+              "id": "ctfl-lo-5-1-3",
+              "code": "FL-5.1.3",
+              "k_level": "K2",
+              "title": "Compare and contrast entry criteria and exit criteria",
+              "summary": "Compare and contrast entry criteria and exit criteria",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.1 Test Planning"
+            },
+            {
+              "id": "ctfl-lo-5-1-4",
+              "code": "FL-5.1.4",
+              "k_level": "K3",
+              "title": "Use estimation techniques to calculate the required test effort",
+              "summary": "Use estimation techniques to calculate the required test effort",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.1 Test Planning"
+            },
+            {
+              "id": "ctfl-lo-5-1-5",
+              "code": "FL-5.1.5",
+              "k_level": "K3",
+              "title": "Apply test case prioritization",
+              "summary": "Apply test case prioritization",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.1 Test Planning"
+            },
+            {
+              "id": "ctfl-lo-5-1-6",
+              "code": "FL-5.1.6",
+              "k_level": "K1",
+              "title": "Recall the concepts of the test pyramid",
+              "summary": "Recall the concepts of the test pyramid",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.1 Test Planning"
+            },
+            {
+              "id": "ctfl-lo-5-1-7",
+              "code": "FL-5.1.7",
+              "k_level": "K2",
+              "title": "Summarize the testing quadrants and their relationships with test levels and test types",
+              "summary": "Summarize the testing quadrants and their relationships with test levels and test types",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.1 Test Planning"
+            },
+            {
+              "id": "ctfl-lo-5-2-1",
+              "code": "FL-5.2.1",
+              "k_level": "K1",
+              "title": "Identify risk level by using risk likelihood and risk impact",
+              "summary": "Identify risk level by using risk likelihood and risk impact",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.2 Risk Management"
+            },
+            {
+              "id": "ctfl-lo-5-2-2",
+              "code": "FL-5.2.2",
+              "k_level": "K2",
+              "title": "Distinguish between project risks and product risks",
+              "summary": "Distinguish between project risks and product risks",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.2 Risk Management"
+            },
+            {
+              "id": "ctfl-lo-5-2-3",
+              "code": "FL-5.2.3",
+              "k_level": "K2",
+              "title": "Explain how product risk analysis may influence thoroughness and test scope",
+              "summary": "Explain how product risk analysis may influence thoroughness and test scope",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.2 Risk Management"
+            },
+            {
+              "id": "ctfl-lo-5-2-4",
+              "code": "FL-5.2.4",
+              "k_level": "K2",
+              "title": "Explain what measures can be taken in response to analyzed product risks",
+              "summary": "Explain what measures can be taken in response to analyzed product risks",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.2 Risk Management"
+            },
+            {
+              "id": "ctfl-lo-5-3-1",
+              "code": "FL-5.3.1",
+              "k_level": "K1",
+              "title": "Recall metrics used for testing",
+              "summary": "Recall metrics used for testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.3 Test Monitoring, Test Control and Test Completion"
+            },
+            {
+              "id": "ctfl-lo-5-3-2",
+              "code": "FL-5.3.2",
+              "k_level": "K2",
+              "title": "Summarize the purposes, content, and audiences for test reports",
+              "summary": "Summarize the purposes, content, and audiences for test reports",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.3 Test Monitoring, Test Control and Test Completion"
+            },
+            {
+              "id": "ctfl-lo-5-3-3",
+              "code": "FL-5.3.3",
+              "k_level": "K2",
+              "title": "Exemplify how to communicate the status of testing",
+              "summary": "Exemplify how to communicate the status of testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.3 Test Monitoring, Test Control and Test Completion"
+            },
+            {
+              "id": "ctfl-lo-5-4-1",
+              "code": "FL-5.4.1",
+              "k_level": "K2",
+              "title": "Summarize how configuration management supports testing",
+              "summary": "Summarize how configuration management supports testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.4 Configuration Management"
+            },
+            {
+              "id": "ctfl-lo-5-5-1",
+              "code": "FL-5.5.1",
+              "k_level": "K3",
+              "title": "Prepare a defect report",
+              "summary": "Prepare a defect report",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "5.5 Defect Management"
+            }
+          ]
+        },
+        {
+          "id": "ctfl-ch6",
+          "position": 6,
+          "title": "Test Tools",
+          "description": "test automation",
+          "objectives": [
+            {
+              "id": "ctfl-lo-6-1-1",
+              "code": "FL-6.1.1",
+              "k_level": "K2",
+              "title": "Explain how different types of test tools support testing",
+              "summary": "Explain how different types of test tools support testing",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "6.1 Tool Support for Testing"
+            },
+            {
+              "id": "ctfl-lo-6-2-1",
+              "code": "FL-6.2.1",
+              "k_level": "K1",
+              "title": "Recall the benefits and risks of test automation",
+              "summary": "Recall the benefits and risks of test automation",
+              "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+              "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+              "source_section": "6.2 Benefits and Risks of Test Automation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ctal-tm-3",
+      "code": "CTAL-TM",
+      "name": "Advanced Level Test Management",
+      "version": "3.0",
+      "description": "Testaktivitäten planen, steuern und abschließen sowie Produkte, Teams und Verbesserungen führen.",
+      "exam_questions": 50,
+      "passing_score": 58,
+      "exam_minutes": 120,
+      "chapters": [
+        {
+          "id": "tm-ch1",
+          "position": 1,
+          "title": "Testaktivitäten managen",
+          "description": "Kontextabhängige Testplanung, Überwachung, Steuerung und Abschluss.",
+          "objectives": [
+            {
+              "id": "tm-lo-context",
+              "code": "TM-DEMO-1",
+              "k_level": "K3",
+              "title": "Testansatz aus dem Kontext ableiten",
+              "summary": "Ein geeigneter Testansatz berücksichtigt Produkt- und Projektrisiken, Entwicklungsmodell, Stakeholder, Einschränkungen, verfügbare Kompetenzen und organisatorische Teststrategie.",
+              "source_label": "ISTQB CTAL-TM v3.0 Syllabus",
+              "source_url": "https://istqb.org/certifications/certified-tester-advanced-level-test-management-ctal-tm-v3-0/",
+              "source_section": "Managing the Test Activities"
+            },
+            {
+              "id": "tm-lo-metrics",
+              "code": "TM-DEMO-2",
+              "k_level": "K3",
+              "title": "Metriken kontextbezogen interpretieren",
+              "summary": "Testmetriken unterstützen Entscheidungen nur, wenn Ziel, Erhebungsmethode, Bezugsgröße, Trend und Kontext berücksichtigt werden. Eine isolierte Kennzahl kann zu falschen Schlussfolgerungen führen.",
+              "source_label": "ISTQB CTAL-TM v3.0 Syllabus",
+              "source_url": "https://istqb.org/certifications/certified-tester-advanced-level-test-management-ctal-tm-v3-0/",
+              "source_section": "Test Metrics"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ct-ai-2",
+      "code": "CT-AI",
+      "name": "Certified Tester AI Testing",
+      "version": "2.0",
+      "description": "Qualitätsmerkmale, Daten, Modelle und Testansätze für ML-, generative und weitere KI-basierte Systeme.",
+      "exam_questions": 40,
+      "passing_score": 29,
+      "exam_minutes": 60,
+      "chapters": [
+        {
+          "id": "ai-ch1",
+          "position": 1,
+          "title": "Machine Learning und KI-basierte Systeme",
+          "description": "Datenqualität, funktionale Leistungsmetriken und besondere Eigenschaften probabilistischer Systeme.",
+          "objectives": [
+            {
+              "id": "ai-lo-data",
+              "code": "AI-DEMO-1",
+              "k_level": "K2",
+              "title": "Rollen von Trainings-, Validierungs- und Testdaten unterscheiden",
+              "summary": "Getrennte Datensätze unterstützen unterschiedliche Entscheidungen: Lernen der Modellparameter, Auswahl beziehungsweise Abstimmung des Modells und möglichst unverzerrte abschließende Bewertung.",
+              "source_label": "ISTQB CT-AI v2.0 Syllabus",
+              "source_url": "https://istqb.org/certifications/certified-tester-ai-testing-ct-ai/",
+              "source_section": "Data for Machine Learning"
+            },
+            {
+              "id": "ai-lo-metrics",
+              "code": "AI-DEMO-2",
+              "k_level": "K3",
+              "title": "ML-Leistungsmetriken passend auswählen",
+              "summary": "Die Auswahl einer Klassifikationsmetrik hängt von Fehlertypen, Klassenverteilung und Nutzungskontext ab. Accuracy allein kann bei unausgeglichenen Klassen irreführend sein.",
+              "source_label": "ISTQB CT-AI v2.0 Syllabus",
+              "source_url": "https://istqb.org/certifications/certified-tester-ai-testing-ct-ai/",
+              "source_section": "ML Functional Performance Metrics for Classification"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "id": "glossary-acceptance-criteria",
+      "term": "acceptance criteria",
+      "definition": "The criteria that a work product must satisfy to be accepted by the stakeholders.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-acceptance-test-driven-development",
+      "term": "acceptance test-driven development",
+      "definition": "A collaboration-based test-first approach that defines acceptance tests in the stakeholders' domain language.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-acceptance-testing",
+      "term": "acceptance testing",
+      "definition": "A test level that focuses on determining whether to accept the system.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-anomaly",
+      "term": "anomaly",
+      "definition": "A condition that deviates from expectation.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-black-box-test-technique",
+      "term": "black-box test technique",
+      "definition": "A test technique based on the specification of a component or system.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-black-box-testing",
+      "term": "black-box testing",
+      "definition": "A test approach based on the specification of a component or system.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-boundary-value-analysis",
+      "term": "boundary value analysis",
+      "definition": "A black-box test technique in which the test conditions are boundary values.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-branch-coverage",
+      "term": "branch coverage",
+      "definition": "The coverage of branches in a control flow graph.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-checklist-based-testing",
+      "term": "checklist-based testing",
+      "definition": "An experience-based test technique in which test cases are designed to exercise the items of a checklist.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-collaboration-based-test-approach",
+      "term": "collaboration-based test approach",
+      "definition": "An approach to testing that focuses on defect avoidance by collaborating among stakeholders.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-component-integration-testing",
+      "term": "component integration testing",
+      "definition": "The integration testing of components.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-component-testing",
+      "term": "component testing",
+      "definition": "A test level that focuses on individual hardware or software components.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-confirmation-testing",
+      "term": "confirmation testing",
+      "definition": "A type of change-related testing performed after fixing a defect to confirm that a failure caused by that defect does not reoccur.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-coverage",
+      "term": "coverage",
+      "definition": "The degree to which specified coverage items are exercised by a test suite, expressed as a percentage.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-coverage-item",
+      "term": "coverage item",
+      "definition": "An attribute or combination of attributes derived from one or more test conditions by using a test technique.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-debugging",
+      "term": "debugging",
+      "definition": "The process of finding, analyzing and removing the causes of failures in a component or system.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-decision-table-testing",
+      "term": "decision table testing",
+      "definition": "A black-box test technique in which the test conditions are the combinations of conditions and the resulting actions shown in a decision table.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-defect",
+      "term": "defect",
+      "definition": "An imperfection or deficiency in a work product where it does not meet its requirements or specifications or impairs its intended use.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-defect-management",
+      "term": "defect management",
+      "definition": "The process of recognizing, recording, classifying, investigating, fixing and disposing of defects.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-defect-report",
+      "term": "defect report",
+      "definition": "Documentation of the occurrence, nature, and status of a defect.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-dynamic-testing",
+      "term": "dynamic testing",
+      "definition": "A test approach that involves test execution of a test item.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-entry-criteria",
+      "term": "entry criteria",
+      "definition": "The set of conditions for officially starting a defined task.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-equivalence-partitioning",
+      "term": "equivalence partitioning",
+      "definition": "A black-box test technique in which test conditions are equivalence partitions exercised by one representative member of each partition.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-error",
+      "term": "error",
+      "definition": "A human action that results in a defect.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-error-guessing",
+      "term": "error guessing",
+      "definition": "A test technique in which the tests conditions are based on the tester's knowledge of past failures or failure modes.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-exit-criteria",
+      "term": "exit criteria",
+      "definition": "The set of conditions for officially completing a defined task.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-experience-based-test-technique",
+      "term": "experience-based test technique",
+      "definition": "A test technique based on the tester's experience, knowledge and intuition.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-exploratory-testing",
+      "term": "exploratory testing",
+      "definition": "A test approach in which tests are dynamically designed and executed based on tester's knowledge, exploration of a test item, and previous test results.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-failure",
+      "term": "failure",
+      "definition": "An event in which a component or system does not meet its requirements within specified limits during its execution.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-formal-review",
+      "term": "formal review",
+      "definition": "A review that follows a defined process with a formally documented output.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-functional-testing",
+      "term": "functional testing",
+      "definition": "A test type to determine the functional suitability of a test object.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-informal-review",
+      "term": "informal review",
+      "definition": "A type of review that does not follow a defined process and has no formally documented output.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-inspection",
+      "term": "inspection",
+      "definition": "A type of formal review that uses defined team roles and measurement to identify defects in a work product, and improve the review process and the software development process.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-integration-testing",
+      "term": "integration testing",
+      "definition": "A test level that focuses on interactions between components or systems.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-maintenance-testing",
+      "term": "maintenance testing",
+      "definition": "A test type that evaluates the effect of changes made to an operational system or its environment.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-non-functional-testing",
+      "term": "non-functional testing",
+      "definition": "A test type to evaluate that a component or system complies with non-functional requirements.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-product-risk",
+      "term": "product risk",
+      "definition": "A risk that impacts the quality of a product.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-project-risk",
+      "term": "project risk",
+      "definition": "A risk that impacts project success.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-quality",
+      "term": "quality",
+      "definition": "The degree to which a work product satisfies stated and implied requirements.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-quality-assurance",
+      "term": "quality assurance",
+      "definition": "Activities focused on providing confidence that quality requirements will be fulfilled.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-regression-testing",
+      "term": "regression testing",
+      "definition": "A type of change-related testing to detect whether defects have been introduced or uncovered in unchanged areas of the software.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-review",
+      "term": "review",
+      "definition": "A type of static testing in which the quality of a work product or process is evaluated by individuals.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-risk",
+      "term": "risk",
+      "definition": "A factor that could result in future negative consequences.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-risk-analysis",
+      "term": "risk analysis",
+      "definition": "The overall process of risk identification and risk assessment.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-risk-assessment",
+      "term": "risk assessment",
+      "definition": "The process to examine identified risks and determine the risk level.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-risk-control",
+      "term": "risk control",
+      "definition": "The overall process of risk mitigation and risk monitoring.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-risk-identification",
+      "term": "risk identification",
+      "definition": "The process of finding, recognizing and describing risks.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-risk-level",
+      "term": "risk level",
+      "definition": "The measure of a risk defined by risk impact and risk likelihood.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-risk-management",
+      "term": "risk management",
+      "definition": "The process for handling risks.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-risk-mitigation",
+      "term": "risk mitigation",
+      "definition": "The process through which decisions are reached and protective measures are implemented for reducing or maintaining risks to specified levels.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-risk-monitoring",
+      "term": "risk monitoring",
+      "definition": "The activity that checks and reports the status of known risks to stakeholders.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-risk-based-testing",
+      "term": "risk-based testing",
+      "definition": "A test approach in which the management, selection, prioritization, and use of test activities and resources are based on corresponding risk types and risk levels.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-root-cause",
+      "term": "root cause",
+      "definition": "A source of a defect such that if it is removed, the occurrence of the defect type is decreased or removed.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-shift-left",
+      "term": "shift left",
+      "definition": "A test approach to perform testing and quality assurance activities as early as possible in the software development lifecycle.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-state-transition-testing",
+      "term": "state transition testing",
+      "definition": "A black-box test technique in which test conditions are state transitions or sequences of them.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-statement-coverage",
+      "term": "statement coverage",
+      "definition": "The coverage of executable source statements.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-static-analysis",
+      "term": "static analysis",
+      "definition": "The automated process of evaluating a component or system without executing it, based on its form, structure, content, or documentation.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-static-testing",
+      "term": "static testing",
+      "definition": "A test approach that does not involve the execution of a test item.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-system-integration-testing",
+      "term": "system integration testing",
+      "definition": "A test level that focuses on the integration of systems.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-system-testing",
+      "term": "system testing",
+      "definition": "A test level that focuses on verifying that a system as a whole meets specified requirements.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-technical-review",
+      "term": "technical review",
+      "definition": "A formal review by technical experts that examine the quality of a work product and identify discrepancies from specifications and standards.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-analysis",
+      "term": "test analysis",
+      "definition": "The activity that identifies test conditions by analyzing the test basis.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-approach",
+      "term": "test approach",
+      "definition": "The manner of implementing test tasks.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-automation",
+      "term": "test automation",
+      "definition": "The conversion of test activities to automated operation.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-basis",
+      "term": "test basis",
+      "definition": "The body of knowledge used as the basis for test analysis and test design.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-case",
+      "term": "test case",
+      "definition": "A set of preconditions, inputs, actions (where applicable), expected results and postconditions, developed based on test conditions.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-completion",
+      "term": "test completion",
+      "definition": "The activity that makes testware available for later use, leaves test environments in a satisfactory condition and communicates the results of testing to relevant stakeholders.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-completion-report",
+      "term": "test completion report",
+      "definition": "A type of test report produced at completion milestones that provides an evaluation of the corresponding test items against exit criteria.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-condition",
+      "term": "test condition",
+      "definition": "A testable aspect of a component or system that is intended to be tested.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-control",
+      "term": "test control",
+      "definition": "The activity that develops and applies corrective actions to get a test project on track when it deviates from what was planned.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-data",
+      "term": "test data",
+      "definition": "Data needed for test execution.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-design",
+      "term": "test design",
+      "definition": "The activity that derives and specifies test cases from test conditions.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-execution",
+      "term": "test execution",
+      "definition": "The activity that runs a test on a component or system producing actual results.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-implementation",
+      "term": "test implementation",
+      "definition": "The activity that prepares the testware needed for test execution.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-level",
+      "term": "test level",
+      "definition": "A specific instantiation of a test process.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-monitoring",
+      "term": "test monitoring",
+      "definition": "The activity that checks the status of testing activities, identifies any variances from planned or expected, and reports status to stakeholders.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-object",
+      "term": "test object",
+      "definition": "The work product to be tested.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-objective",
+      "term": "test objective",
+      "definition": "The purpose for testing.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-plan",
+      "term": "test plan",
+      "definition": "Documentation that describes test objectives, means and schedule for achieving test coordination.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-planning",
+      "term": "test planning",
+      "definition": "The activity of establishing or updating a test plan.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-procedure",
+      "term": "test procedure",
+      "definition": "A sequence of test cases in execution order and any associated actions that may be required to set up the initial preconditions and any wrap-up activities after execution.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-process",
+      "term": "test process",
+      "definition": "A set of test activities performed to achieve a test objective.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-progress-report",
+      "term": "test progress report",
+      "definition": "A type of periodic test report that includes the progress of test activities against a baseline, risks, and alternatives requiring a decision.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-pyramid",
+      "term": "test pyramid",
+      "definition": "A graphical model representing the relationship of the amount of testing per level, with more at the bottom than at the top.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-result",
+      "term": "test result",
+      "definition": "The status of the execution of a test.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-strategy",
+      "term": "test strategy",
+      "definition": "A description of how to perform testing to reach test objectives under given circumstances.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-technique",
+      "term": "test technique",
+      "definition": "A procedure used to define test conditions, design test cases, and specify test data.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-test-type",
+      "term": "test type",
+      "definition": "A group of test activities based on specific test objectives aimed at specific characteristics of a component or system.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-testing",
+      "term": "testing",
+      "definition": "The process within the software development lifecycle that evaluates the quality of a component or system and related work products.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-testing-quadrants",
+      "term": "testing quadrants",
+      "definition": "A classification model of test types/test levels in four quadrants, relating them to two dimensions of test objectives: supporting the product team versus critiquing the product, and technology-facing versus business-facing.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-testware",
+      "term": "testware",
+      "definition": "Work products produced during the test process for use in planning, designing, executing, evaluating and reporting on testing.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-traceability",
+      "term": "traceability",
+      "definition": "The ability to establish explicit relationships between related work products or items within work products.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-validation",
+      "term": "validation",
+      "definition": "Confirmation by examination that a work product matches a stakeholder's needs.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-verification",
+      "term": "verification",
+      "definition": "The process of confirming that a work product fulfills its specification.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-walkthrough",
+      "term": "walkthrough",
+      "definition": "A type of formal review in which an author leads members of the review through a work product and the members ask questions and make comments.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-white-box-test-technique",
+      "term": "white-box test technique",
+      "definition": "A test technique based on the internal structure of a component or system.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    },
+    {
+      "id": "glossary-white-box-testing",
+      "term": "white-box testing",
+      "definition": "A test approach based on the internal structure of a component or system.",
+      "language": "en",
+      "snapshot": "istqb-glossary-4.7.2",
+      "origin": "official",
+      "source_label": "ISTQB Standard Glossary of Terms used in Software Testing",
+      "source_url": "https://glossary.istqb.org/",
+      "courses": [
+        "ctfl-4"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "ctfl-q1",
+      "course_id": "ctfl-4",
+      "learning_objective_id": "ctfl-lo-1-1-1",
+      "prompt": "Welche Aussage beschreibt eine grundlegende Grenze des Testens am besten?",
+      "question_type": "single_choice",
+      "origin": "editorial",
+      "points": 1,
+      "explanation": "Testen kann das Vorhandensein von Fehlerwirkungen und Risiken sichtbar machen. Eine endliche Menge von Tests kann jedoch im Allgemeinen nicht beweisen, dass ein komplexes Testobjekt vollständig fehlerfrei ist.",
+      "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+      "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/",
+      "source_section": "Testing Principles",
+      "options": [
+        {
+          "id": "ctfl-q1-o1",
+          "position": 1,
+          "text": "Ausreichend viele bestandene Tests beweisen vollständige Fehlerfreiheit.",
+          "is_correct": false,
+          "feedback": "Bestandene Tests liefern Evidenz für die geprüften Bedingungen, aber keinen vollständigen Fehlerfreiheitsbeweis."
+        },
+        {
+          "id": "ctfl-q1-o2",
+          "position": 2,
+          "text": "Testen kann vorhandene Fehlerwirkungen zeigen, aber vollständige Fehlerfreiheit nicht generell beweisen.",
+          "is_correct": true,
+          "feedback": "Richtig. Das beschreibt die Grenze positiver Testergebnisse."
+        },
+        {
+          "id": "ctfl-q1-o3",
+          "position": 3,
+          "text": "Testen ist nur sinnvoll, nachdem der gesamte Code fertiggestellt wurde.",
+          "is_correct": false,
+          "feedback": "Testaktivitäten können und sollen bereits früh im Lebenszyklus stattfinden."
+        },
+        {
+          "id": "ctfl-q1-o4",
+          "position": 4,
+          "text": "Testen besteht ausschließlich aus der Ausführung eines Testobjekts.",
+          "is_correct": false,
+          "feedback": "Testen umfasst auch statische und weitere nicht ausführende Aktivitäten."
+        }
+      ]
+    },
+    {
+      "id": "ctfl-q2",
+      "course_id": "ctfl-4",
+      "learning_objective_id": "ctfl-lo-1-1-1",
+      "prompt": "Zwei Produktbereiche können nicht gleich intensiv getestet werden. Bereich A hat eine höhere Eintrittswahrscheinlichkeit und einen größeren möglichen Schaden als Bereich B. Was ist die passendste Reaktion?",
+      "question_type": "single_choice",
+      "origin": "editorial",
+      "points": 1,
+      "explanation": "Bei einem höheren Produktrisiko wird typischerweise mehr oder früherer Testaufwand eingeplant. Die konkrete Reaktion bleibt kontextabhängig.",
+      "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+      "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/",
+      "source_section": "Risk Management",
+      "options": [
+        {
+          "id": "ctfl-q2-o1",
+          "position": 1,
+          "text": "Bereich B zuerst testen, weil dort weniger Fehler erwartet werden.",
+          "is_correct": false,
+          "feedback": "Das würde die risikobasierte Priorisierung umkehren."
+        },
+        {
+          "id": "ctfl-q2-o2",
+          "position": 2,
+          "text": "Beide Bereiche unabhängig vom Risiko identisch behandeln.",
+          "is_correct": false,
+          "feedback": "Das ignoriert die verfügbaren Risikoinformationen."
+        },
+        {
+          "id": "ctfl-q2-o3",
+          "position": 3,
+          "text": "Bereich A höher priorisieren und den Testumfang dort gegebenenfalls erhöhen.",
+          "is_correct": true,
+          "feedback": "Richtig. Höheres Produktrisiko beeinflusst Priorität und Testintensität."
+        },
+        {
+          "id": "ctfl-q2-o4",
+          "position": 4,
+          "text": "Keinen der Bereiche testen, bis das Risiko vollständig beseitigt ist.",
+          "is_correct": false,
+          "feedback": "Testen liefert gerade Informationen über verbleibende Risiken."
+        }
+      ]
+    },
+    {
+      "id": "tm-q1",
+      "course_id": "ctal-tm-3",
+      "learning_objective_id": "tm-lo-context",
+      "prompt": "Ein Testmanager übernimmt zwei Produkte mit unterschiedlichen Entwicklungsmodellen, Risiken und regulatorischen Anforderungen. Welche Handlung ist am angemessensten?",
+      "question_type": "single_choice",
+      "origin": "editorial",
+      "points": 2,
+      "explanation": "Ein Testansatz wird aus dem jeweiligen Kontext abgeleitet. Eine organisatorische Strategie kann Leitplanken liefern, ersetzt aber nicht die Kontextanalyse.",
+      "source_label": "ISTQB CTAL-TM v3.0 Syllabus",
+      "source_url": "https://istqb.org/certifications/certified-tester-advanced-level-test-management-ctal-tm-v3-0/",
+      "source_section": "The Context of Testing",
+      "options": [
+        {
+          "id": "tm-q1-o1",
+          "position": 1,
+          "text": "Für beide Produkte unverändert denselben Testansatz verwenden.",
+          "is_correct": false,
+          "feedback": "Das blendet wesentliche Kontextunterschiede aus."
+        },
+        {
+          "id": "tm-q1-o2",
+          "position": 2,
+          "text": "Für jedes Produkt einen kontextabhängigen Testansatz innerhalb organisatorischer Leitplanken entwickeln.",
+          "is_correct": true,
+          "feedback": "Richtig. Strategie und Produktkontext werden gemeinsam berücksichtigt."
+        },
+        {
+          "id": "tm-q1-o3",
+          "position": 3,
+          "text": "Nur die regulatorischen Anforderungen betrachten.",
+          "is_correct": false,
+          "feedback": "Regulatorik ist wichtig, aber nur ein Teil des Testkontexts."
+        },
+        {
+          "id": "tm-q1-o4",
+          "position": 4,
+          "text": "Die Auswahl vollständig dem Testwerkzeug überlassen.",
+          "is_correct": false,
+          "feedback": "Werkzeuge unterstützen, bestimmen aber nicht selbst den geeigneten Testansatz."
+        }
+      ]
+    },
+    {
+      "id": "tm-q2",
+      "course_id": "ctal-tm-3",
+      "learning_objective_id": "tm-lo-metrics",
+      "prompt": "Die Zahl neu gemeldeter Fehlerzustände sinkt seit drei Wochen. Welche Schlussfolgerung ist ohne weitere Informationen zulässig?",
+      "question_type": "single_choice",
+      "origin": "editorial",
+      "points": 2,
+      "explanation": "Eine sinkende Fehlerzahl kann verschiedene Ursachen haben. Für eine belastbare Interpretation werden Kontext und weitere Kennzahlen benötigt.",
+      "source_label": "ISTQB CTAL-TM v3.0 Syllabus",
+      "source_url": "https://istqb.org/certifications/certified-tester-advanced-level-test-management-ctal-tm-v3-0/",
+      "source_section": "Test Metrics",
+      "options": [
+        {
+          "id": "tm-q2-o1",
+          "position": 1,
+          "text": "Die Produktqualität ist nachweislich gestiegen.",
+          "is_correct": false,
+          "feedback": "Die einzelne Metrik beweist das nicht."
+        },
+        {
+          "id": "tm-q2-o2",
+          "position": 2,
+          "text": "Das Testteam arbeitet nachweislich langsamer.",
+          "is_correct": false,
+          "feedback": "Auch diese Ursache lässt sich nicht aus der Kennzahl allein ableiten."
+        },
+        {
+          "id": "tm-q2-o3",
+          "position": 3,
+          "text": "Die Kennzahl muss zusammen mit Testumfang, Aktivität, Änderungen und weiteren Trends interpretiert werden.",
+          "is_correct": true,
+          "feedback": "Richtig. Metriken benötigen Ziel und Kontext."
+        },
+        {
+          "id": "tm-q2-o4",
+          "position": 4,
+          "text": "Alle Tests können sofort beendet werden.",
+          "is_correct": false,
+          "feedback": "Eine einzelne sinkende Kennzahl ist kein ausreichendes Abschlusskriterium."
+        }
+      ]
+    },
+    {
+      "id": "ai-q1",
+      "course_id": "ct-ai-2",
+      "learning_objective_id": "ai-lo-data",
+      "prompt": "Warum sollte ein abschließender ML-Testdatensatz nicht fortlaufend zur Modellabstimmung verwendet werden?",
+      "question_type": "single_choice",
+      "origin": "editorial",
+      "points": 1,
+      "explanation": "Wenn Informationen aus dem Testdatensatz in Modellwahl oder Abstimmung einfließen, ist die abschließende Bewertung nicht mehr unabhängig und kann die Generalisierungsleistung zu optimistisch darstellen.",
+      "source_label": "ISTQB CT-AI v2.0 Syllabus",
+      "source_url": "https://istqb.org/certifications/certified-tester-ai-testing-ct-ai/",
+      "source_section": "Data for Machine Learning",
+      "options": [
+        {
+          "id": "ai-q1-o1",
+          "position": 1,
+          "text": "Weil Testdaten grundsätzlich keine Labels besitzen dürfen.",
+          "is_correct": false,
+          "feedback": "Testdaten können abhängig von der Aufgabe sehr wohl Referenzlabels besitzen."
+        },
+        {
+          "id": "ai-q1-o2",
+          "position": 2,
+          "text": "Weil die Bewertung sonst durch wiederholte Anpassung an den Testdatensatz verzerrt werden kann.",
+          "is_correct": true,
+          "feedback": "Richtig. Der Datensatz verliert seine Rolle als möglichst unabhängige Bewertung."
+        },
+        {
+          "id": "ai-q1-o3",
+          "position": 3,
+          "text": "Weil ML-Modelle nur Trainingsdaten verarbeiten können.",
+          "is_correct": false,
+          "feedback": "Modelle verarbeiten nach dem Training auch neue Eingaben."
+        },
+        {
+          "id": "ai-q1-o4",
+          "position": 4,
+          "text": "Weil Validierungsdaten immer größer als Testdaten sein müssen.",
+          "is_correct": false,
+          "feedback": "Eine solche allgemeine Größenregel besteht nicht."
+        }
+      ]
+    },
+    {
+      "id": "ai-q2",
+      "course_id": "ct-ai-2",
+      "learning_objective_id": "ai-lo-metrics",
+      "prompt": "Ein Klassifikator erkennt eine sehr seltene, sicherheitskritische positive Klasse. Welche Aussage zur Accuracy ist am zutreffendsten?",
+      "question_type": "single_choice",
+      "origin": "editorial",
+      "points": 1,
+      "explanation": "Bei starker Klassenunwucht kann ein Modell eine hohe Accuracy erreichen, obwohl es die seltene relevante Klasse schlecht erkennt. Weitere Metriken und die Kosten der Fehlertypen sind nötig.",
+      "source_label": "ISTQB CT-AI v2.0 Syllabus",
+      "source_url": "https://istqb.org/certifications/certified-tester-ai-testing-ct-ai/",
+      "source_section": "ML Functional Performance Metrics for Classification",
+      "options": [
+        {
+          "id": "ai-q2-o1",
+          "position": 1,
+          "text": "Eine hohe Accuracy reicht unabhängig von der Klassenverteilung immer aus.",
+          "is_correct": false,
+          "feedback": "Klassenverteilung und Kosten der Fehlertypen können Accuracy irreführend machen."
+        },
+        {
+          "id": "ai-q2-o2",
+          "position": 2,
+          "text": "Accuracy ist bei Klassifikation niemals verwendbar.",
+          "is_correct": false,
+          "feedback": "Accuracy kann geeignet sein, aber nicht in jedem Kontext allein."
+        },
+        {
+          "id": "ai-q2-o3",
+          "position": 3,
+          "text": "Accuracy sollte zusammen mit klassenbezogenen Metriken und den Auswirkungen falscher Ergebnisse bewertet werden.",
+          "is_correct": true,
+          "feedback": "Richtig. Die Metrikenauswahl folgt dem Nutzungskontext."
+        },
+        {
+          "id": "ai-q2-o4",
+          "position": 4,
+          "text": "Nur die Größe des Trainingsdatensatzes entscheidet über die geeignete Metrik.",
+          "is_correct": false,
+          "feedback": "Auch Klassenverteilung, Fehlertypen und Qualitätsziele sind entscheidend."
+        }
+      ]
+    }
+  ]
+}
