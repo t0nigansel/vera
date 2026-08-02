@@ -1,5 +1,7 @@
 mod attempt;
+mod term_training;
 pub use attempt::*;
+pub use term_training::*;
 
 use serde::{Deserialize, Serialize};
 

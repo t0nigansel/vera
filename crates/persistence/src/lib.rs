@@ -4,7 +4,9 @@ use domain::{
     ConfusionCluster, ConfusionClusterMember, ContentOrigin, CourseDetail, CourseSummary,
     GlossaryLink, GlossaryTerm, KLevelProgress, LearningObjective, LearningStatus,
     ObjectiveProgress, OptionFeedback, ProgressOverview, Question, QuestionOption, QuestionType,
-    ReasoningChoice, RetrievedContext, SourceReference,
+    ReasoningChoice, RetrievedContext, SourceReference, TermAttemptResult, TermAttemptSubmission,
+    TermCandidate, TermCard, TermDirection, TermExercise, TermExerciseInput, TermTopic,
+    build_exercise, rotate_direction,
 };
 use serde::Deserialize;
 use sqlx::{Row, SqlitePool, sqlite::SqlitePoolOptions};
@@ -573,6 +575,235 @@ impl Database {
         Ok(clusters)
     }
 
+    async fn term_exercise_input(
+        &self,
+        term_id: &str,
+    ) -> Result<TermExerciseInput, PersistenceError> {
+        let term = sqlx::query("SELECT id, term, definition FROM glossary_terms WHERE id = ?")
+            .bind(term_id)
+            .fetch_optional(&self.pool)
+            .await?
+            .ok_or_else(|| PersistenceError::NotFound(format!("Begriff {term_id}")))?;
+        let course_id: String = sqlx::query_scalar(
+            "SELECT course_id FROM course_glossary_terms WHERE glossary_term_id = ? ORDER BY course_id LIMIT 1",
+        )
+        .bind(term_id)
+        .fetch_optional(&self.pool)
+        .await?
+        .ok_or_else(|| PersistenceError::NotFound(format!("Begriff {term_id}")))?;
+
+        let topic_row = sqlx::query(
+            "SELECT DISTINCT c.id, c.title, c.position FROM glossary_term_objectives gto JOIN learning_objectives lo ON lo.id = gto.learning_objective_id JOIN chapters c ON c.id = lo.chapter_id WHERE gto.glossary_term_id = ? AND gto.relation = 'chapter_keyword' AND c.course_id = ? ORDER BY c.position, c.id LIMIT 1",
+        )
+        .bind(term_id)
+        .bind(&course_id)
+        .fetch_optional(&self.pool)
+        .await?;
+        let topic = topic_row.map(|row| TermTopic {
+            id: row.get("id"),
+            title: row.get("title"),
+        });
+
+        let cluster_row = sqlx::query(
+            "SELECT cc.id, cc.title, ccm.distinction FROM confusion_cluster_members ccm JOIN confusion_clusters cc ON cc.id = ccm.cluster_id WHERE ccm.glossary_term_id = ? AND cc.course_id = ? ORDER BY cc.id LIMIT 1",
+        )
+        .bind(term_id)
+        .bind(&course_id)
+        .fetch_optional(&self.pool)
+        .await?;
+        let (cluster_id, cluster_title, distinction) = if let Some(row) = cluster_row {
+            (
+                Some(row.get::<String, _>("id")),
+                Some(row.get::<String, _>("title")),
+                Some(row.get::<String, _>("distinction")),
+            )
+        } else {
+            (None, None, None)
+        };
+
+        let cluster_mates = if let Some(cluster_id) = cluster_id.as_deref() {
+            sqlx::query(
+                "SELECT DISTINCT g.id, g.term, g.definition FROM confusion_cluster_members ccm JOIN glossary_terms g ON g.id = ccm.glossary_term_id WHERE ccm.cluster_id = ? AND g.id != ? ORDER BY g.id",
+            )
+            .bind(cluster_id)
+            .bind(term_id)
+            .fetch_all(&self.pool)
+            .await?
+            .into_iter()
+            .map(|row| TermCandidate {
+                id: row.get("id"),
+                term: row.get("term"),
+                definition: row.get("definition"),
+            })
+            .collect()
+        } else {
+            Vec::new()
+        };
+
+        let see_also = sqlx::query(
+            "SELECT DISTINCT g.id, g.term, g.definition FROM glossary_term_links gtl JOIN glossary_terms g ON g.id = gtl.target_term_id WHERE gtl.glossary_term_id = ? AND gtl.kind = 'see_also' AND gtl.target_term_id IS NOT NULL ORDER BY g.id",
+        )
+        .bind(term_id)
+        .fetch_all(&self.pool)
+        .await?
+        .into_iter()
+        .map(|row| TermCandidate {
+            id: row.get("id"),
+            term: row.get("term"),
+            definition: row.get("definition"),
+        })
+        .collect();
+
+        let chapter_mates = if let Some(topic) = topic.as_ref() {
+            sqlx::query(
+                "SELECT DISTINCT g.id, g.term, g.definition FROM glossary_terms g JOIN course_glossary_terms cgt ON cgt.glossary_term_id = g.id JOIN glossary_term_objectives gto ON gto.glossary_term_id = g.id AND gto.relation = 'chapter_keyword' JOIN learning_objectives lo ON lo.id = gto.learning_objective_id WHERE cgt.course_id = ? AND lo.chapter_id = ? AND g.id != ? ORDER BY g.id LIMIT 20",
+            )
+            .bind(&course_id)
+            .bind(&topic.id)
+            .bind(term_id)
+            .fetch_all(&self.pool)
+            .await?
+            .into_iter()
+            .map(|row| TermCandidate {
+                id: row.get("id"),
+                term: row.get("term"),
+                definition: row.get("definition"),
+            })
+            .collect()
+        } else {
+            Vec::new()
+        };
+
+        let topics =
+            sqlx::query("SELECT id, title FROM chapters WHERE course_id = ? ORDER BY position, id")
+                .bind(&course_id)
+                .fetch_all(&self.pool)
+                .await?
+                .into_iter()
+                .map(|row| TermTopic {
+                    id: row.get("id"),
+                    title: row.get("title"),
+                })
+                .collect();
+        let attempt_count = sqlx::query_scalar(
+            "SELECT COUNT(*) FROM term_attempts WHERE glossary_term_id = ? AND profile_id = 'local-default'",
+        )
+        .bind(term_id)
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(TermExerciseInput {
+            card: TermCard {
+                term_id: term.get("id"),
+                term: term.get("term"),
+                definition: term.get("definition"),
+                topic,
+                cluster_title,
+                distinction,
+            },
+            cluster_mates,
+            see_also,
+            chapter_mates,
+            topics,
+            attempt_count,
+        })
+    }
+
+    pub async fn next_term_exercise(
+        &self,
+        course_id: &str,
+        direction: Option<TermDirection>,
+    ) -> Result<TermExercise, PersistenceError> {
+        let now = Utc::now().to_rfc3339();
+        let term_ids: Vec<String> = sqlx::query_scalar(
+            "WITH candidates AS (SELECT g.id, EXISTS(SELECT 1 FROM term_attempts ta WHERE ta.glossary_term_id = g.id AND ta.profile_id = 'local-default') AS attempted, (SELECT ta.next_review_at FROM term_attempts ta WHERE ta.glossary_term_id = g.id AND ta.profile_id = 'local-default' ORDER BY ta.created_at DESC, ta.id DESC LIMIT 1) AS next_review_at FROM glossary_terms g JOIN course_glossary_terms cgt ON cgt.glossary_term_id = g.id WHERE cgt.course_id = ?) SELECT id FROM candidates ORDER BY CASE WHEN attempted = 1 AND next_review_at <= ? THEN 0 WHEN attempted = 0 THEN 1 ELSE 2 END, CASE WHEN attempted = 1 AND next_review_at <= ? THEN next_review_at END DESC, CASE WHEN attempted = 1 AND next_review_at > ? THEN next_review_at END ASC, id LIMIT 25",
+        )
+        .bind(course_id)
+        .bind(&now)
+        .bind(&now)
+        .bind(&now)
+        .fetch_all(&self.pool)
+        .await?;
+
+        for term_id in term_ids {
+            let input = self.term_exercise_input(&term_id).await?;
+            let selected_direction = direction.or_else(|| rotate_direction(&input));
+            if let Some(exercise) = selected_direction
+                .and_then(|selected_direction| build_exercise(&input, selected_direction))
+            {
+                return Ok(exercise);
+            }
+        }
+
+        Err(PersistenceError::NotFound(
+            "Keine passende Begriffsübung".into(),
+        ))
+    }
+
+    pub async fn submit_term_attempt(
+        &self,
+        term_id: &str,
+        submission: TermAttemptSubmission,
+    ) -> Result<TermAttemptResult, PersistenceError> {
+        let input = self.term_exercise_input(term_id).await?;
+        let exercise = build_exercise(&input, submission.direction)
+            .ok_or_else(|| PersistenceError::NotFound("Keine passende Begriffsübung".into()))?;
+        let correct = submission.selected_option_id == exercise.correct_option_id;
+        let confidence = submission.confidence.clone();
+        let diagnosis =
+            AttemptDiagnosis::evaluate(correct, &confidence, ReasoningChoice::NotStated);
+        let now = Utc::now();
+        let review_due_at = (now + Duration::days(diagnosis.review_interval_days)).to_rfc3339();
+        let attempt_id = Uuid::new_v4().to_string();
+        let source_row =
+            sqlx::query("SELECT source_label, source_url, origin FROM glossary_terms WHERE id = ?")
+                .bind(term_id)
+                .fetch_one(&self.pool)
+                .await?;
+
+        sqlx::query(
+            "INSERT INTO term_attempts (id, profile_id, glossary_term_id, direction, selected_option_id, is_correct, confidence, next_review_at, created_at) VALUES (?, 'local-default', ?, ?, ?, ?, ?, ?, ?)",
+        )
+        .bind(&attempt_id)
+        .bind(term_id)
+        .bind(term_direction_value(submission.direction))
+        .bind(&submission.selected_option_id)
+        .bind(correct)
+        .bind(confidence_value(&confidence))
+        .bind(&review_due_at)
+        .bind(now.to_rfc3339())
+        .execute(&self.pool)
+        .await?;
+
+        let distinction = if !correct || input.card.cluster_title.is_some() {
+            input.card.distinction.clone()
+        } else {
+            None
+        };
+
+        Ok(TermAttemptResult {
+            attempt_id,
+            correct,
+            correct_option_id: exercise.correct_option_id,
+            term: input.card.term,
+            definition: input.card.definition,
+            outcome: diagnosis.outcome,
+            counts_as_mastery: diagnosis.counts_as_mastery,
+            confidence,
+            diagnosis: diagnosis.message,
+            distinction,
+            cluster_title: input.card.cluster_title,
+            review_due_at,
+            tutor_recommended: diagnosis.tutor_recommended,
+            source: SourceReference {
+                label: source_row.get("source_label"),
+                url: source_row.get("source_url"),
+                section: None,
+                origin: parse_origin(source_row.get::<String, _>("origin").as_str()),
+            },
+        })
+    }
+
     pub async fn next_question(
         &self,
         course_id: &str,
@@ -930,6 +1161,15 @@ fn confidence_value(confidence: &AnswerConfidence) -> &'static str {
     }
 }
 
+fn term_direction_value(direction: TermDirection) -> &'static str {
+    match direction {
+        TermDirection::TermToDefinition => "term_to_definition",
+        TermDirection::DefinitionToTerm => "definition_to_term",
+        TermDirection::ScenarioToTerm => "scenario_to_term",
+        TermDirection::TermToTopic => "term_to_topic",
+    }
+}
+
 fn reasoning_choice_value(reasoning_choice: &ReasoningChoice) -> &'static str {
     match reasoning_choice {
         ReasoningChoice::Recalled => "recalled",
@@ -1098,6 +1338,139 @@ mod tests {
         assert_eq!(courses.len(), 3);
         let question = database.next_question("ctfl-4", None).await.unwrap();
         assert!(!question.options.is_empty());
+    }
+
+    #[tokio::test]
+    async fn next_term_exercise_has_options_without_serialized_solution() {
+        let database = Database::in_memory().await.unwrap();
+        let exercise = database.next_term_exercise("ctfl-4", None).await.unwrap();
+        let serialized = serde_json::to_string(&exercise).unwrap();
+
+        assert!(exercise.options.len() >= 2);
+        assert!(!serialized.contains("correct_option_id"));
+    }
+
+    #[tokio::test]
+    async fn cluster_term_uses_only_cluster_distractors() {
+        let database = Database::in_memory().await.unwrap();
+        let input = database
+            .term_exercise_input("glossary-defect")
+            .await
+            .unwrap();
+        let exercise = build_exercise(&input, TermDirection::TermToDefinition).unwrap();
+        let cluster_member_ids = input
+            .cluster_mates
+            .iter()
+            .map(|candidate| candidate.id.as_str())
+            .collect::<HashSet<_>>();
+
+        assert_eq!(
+            exercise.distractor_source,
+            domain::DistractorSource::Cluster
+        );
+        assert!(exercise.options.iter().all(|option| {
+            option.id == exercise.correct_option_id
+                || cluster_member_ids.contains(option.id.as_str())
+        }));
+    }
+
+    #[tokio::test]
+    async fn term_attempts_are_scored_and_each_adds_one_row() {
+        let database = Database::in_memory().await.unwrap();
+        let input = database
+            .term_exercise_input("glossary-defect")
+            .await
+            .unwrap();
+        let exercise = build_exercise(&input, TermDirection::TermToDefinition).unwrap();
+        let wrong_option_id = exercise
+            .options
+            .iter()
+            .find(|option| option.id != exercise.correct_option_id)
+            .unwrap()
+            .id
+            .clone();
+        let before: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM term_attempts")
+            .fetch_one(&database.pool)
+            .await
+            .unwrap();
+
+        let correct = database
+            .submit_term_attempt(
+                "glossary-defect",
+                TermAttemptSubmission {
+                    direction: TermDirection::TermToDefinition,
+                    selected_option_id: exercise.correct_option_id,
+                    confidence: AnswerConfidence::Sure,
+                },
+            )
+            .await
+            .unwrap();
+        let after_correct: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM term_attempts")
+            .fetch_one(&database.pool)
+            .await
+            .unwrap();
+        let wrong = database
+            .submit_term_attempt(
+                "glossary-defect",
+                TermAttemptSubmission {
+                    direction: TermDirection::TermToDefinition,
+                    selected_option_id: wrong_option_id,
+                    confidence: AnswerConfidence::Unsure,
+                },
+            )
+            .await
+            .unwrap();
+        let after_wrong: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM term_attempts")
+            .fetch_one(&database.pool)
+            .await
+            .unwrap();
+
+        assert!(correct.correct);
+        assert!(!wrong.correct);
+        assert_eq!(after_correct, before + 1);
+        assert_eq!(after_wrong, after_correct + 1);
+    }
+
+    #[tokio::test]
+    async fn next_term_exercise_is_stable_without_an_attempt() {
+        let database = Database::in_memory().await.unwrap();
+        let first = database.next_term_exercise("ctfl-4", None).await.unwrap();
+        let second = database.next_term_exercise("ctfl-4", None).await.unwrap();
+
+        assert_eq!(first.term_id, second.term_id);
+        assert_eq!(first.direction, second.direction);
+        assert_eq!(
+            first
+                .options
+                .iter()
+                .map(|option| (option.id.as_str(), option.text.as_str()))
+                .collect::<Vec<_>>(),
+            second
+                .options
+                .iter()
+                .map(|option| (option.id.as_str(), option.text.as_str()))
+                .collect::<Vec<_>>()
+        );
+    }
+
+    #[tokio::test]
+    async fn next_term_changes_after_an_answer() {
+        let database = Database::in_memory().await.unwrap();
+        let first = database.next_term_exercise("ctfl-4", None).await.unwrap();
+        database
+            .submit_term_attempt(
+                &first.term_id,
+                TermAttemptSubmission {
+                    direction: first.direction,
+                    selected_option_id: first.correct_option_id.clone(),
+                    confidence: AnswerConfidence::Sure,
+                },
+            )
+            .await
+            .unwrap();
+
+        let second = database.next_term_exercise("ctfl-4", None).await.unwrap();
+        assert_ne!(second.term_id, first.term_id);
     }
 
     #[tokio::test]

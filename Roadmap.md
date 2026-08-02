@@ -125,7 +125,7 @@ Aus `seed_if_empty` wurde `install_content`. Aktualisiert wird per Upsert, gelö
 
 Begriffe und Lernziele, die ein neuer Corpus nicht mehr enthält, bleiben als Altbestand stehen. Die Lernhistorie hat Vorrang vor einem aufgeräumten Bestand.
 
-### (d) Begriffstraining-Backend
+### (d) Begriffstraining-Backend — erledigt
 
 Migration `0005`. Neues Modul `domain::term_training` mit vier Abfragerichtungen:
 
@@ -135,6 +135,12 @@ Migration `0005`. Neues Modul `domain::term_training` mit vier Abfragerichtungen
 4. Begriff → Thema
 
 Distraktoren bevorzugt aus demselben Verwechslungscluster, sonst aus `see_also`, sonst aus demselben Kapitel. Die Auswahl ist eine reine Funktion über einen von `persistence` gefüllten Kandidatenpool und wird im domain-Crate unit-getestet. Neue Routen `GET /api/courses/{id}/terms/next` und `POST /api/terms/{id}/attempts`. Kein Modellaufruf.
+
+Die Lösung verlässt den Server nicht: `correct_option_id` ist `#[serde(skip_serializing)]`, und beim Absenden erzeugt der Server dieselbe Übung erneut und vergleicht. Möglich ist das nur, weil die Erzeugung vollständig deterministisch ist — die Optionsreihenfolge entsteht aus einer Rotation um einen FNV-1a-Hash über `(term_id, direction)`.
+
+`Szenario → Begriff` beruht auf den redaktionellen Abgrenzungssätzen aus `clusters.json`, weil im Bestand keine Szenariotexte existieren. Die Richtung ist deshalb nur für Cluster-Mitglieder verfügbar. Echte Szenariostämme im Prüfungsregister gehören zur Fragen-Stilrichtlinie und damit in eine spätere Ausbaustufe.
+
+Bewertung, Intervall und Diagnosetext stammen aus `AttemptDiagnosis::evaluate` — es gibt keine zweite Diagnoselogik neben der aus Meilenstein (b).
 
 ### (e) Wiederholungsplanung
 
@@ -156,6 +162,8 @@ Tab „Begriffe" im Kurs-Arbeitsbereich mit Richtungswahl, Sicherheitsangabe und
 - Prüfungssprache-Training — setzt eine deutsche Glossarfassung voraus, die nicht importiert ist
 
 ## Offene Punkte
+
+- Fragen und Begriffe sortieren die nächste Aktivität unterschiedlich: `next_question` zeigt zuerst noch nie beantwortete Fragen und danach fällige Wiederholungen, `next_term_exercise` genau umgekehrt. Für einen sicher falsch beantworteten Begriff bedeutet das eine sofortige Wiedervorlage — richtig im Sinne von Vision.md, aber bei wiederholtem Scheitern sieht der Nutzer nichts Neues mehr. Die Rangfolge gehört vereinheitlicht und ist in Meilenstein (e) zu entscheiden, wo der Wiederholungsplaner entsteht.
 
 - Die harte Obergrenze `LIMIT 100` in der Glossarabfrage ([crates/persistence/src/lib.rs:316](crates/persistence/src/lib.rs#L316)) schneidet größere Bestände stillschweigend ab.
 - Das Frontend zeigt den Hinweis „Starter-Snapshot" fest verdrahtet an ([web/src/App.tsx:830-832](web/src/App.tsx#L830-L832)), unabhängig vom tatsächlich installierten Bestand.

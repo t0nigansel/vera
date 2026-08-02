@@ -1,14 +1,15 @@
 use anyhow::{Context, Result};
 use axum::{
     Json, Router,
-    extract::{Path, Query, State},
+    extract::{Path, Query, State, rejection::QueryRejection},
     http::StatusCode,
     response::{IntoResponse, Response},
     routing::{get, post},
 };
 use domain::{
     AttemptResult, AttemptSubmission, CourseDetail, CourseSummary, GlossaryTerm, ProgressOverview,
-    ProviderStatus, Question, SystemStatus, TutorRequest, TutorResponse,
+    ProviderStatus, Question, SystemStatus, TermAttemptResult, TermAttemptSubmission,
+    TermDirection, TermExercise, TutorRequest, TutorResponse,
 };
 use llm::{
     ChatMessage, ChatProvider, ChatRequest, EmbeddingProvider, FakeChatProvider,
@@ -66,7 +67,9 @@ async fn main() -> Result<()> {
         .route("/courses/{course_id}", get(course_detail))
         .route("/courses/{course_id}/progress", get(course_progress))
         .route("/courses/{course_id}/questions/next", get(next_question))
+        .route("/courses/{course_id}/terms/next", get(next_term_exercise))
         .route("/questions/{question_id}/attempts", post(submit_attempt))
+        .route("/terms/{term_id}/attempts", post(submit_term_attempt))
         .route("/glossary", get(glossary))
         .route("/tutor/messages", post(tutor_message));
 
@@ -211,6 +214,42 @@ async fn submit_attempt(
         state
             .database
             .submit_attempt(&question_id, submission)
+            .await?,
+    ))
+}
+
+#[derive(Debug, Deserialize)]
+struct TermExerciseQuery {
+    direction: Option<TermDirection>,
+}
+
+async fn next_term_exercise(
+    State(state): State<AppState>,
+    Path(course_id): Path<String>,
+    query: std::result::Result<Query<TermExerciseQuery>, QueryRejection>,
+) -> Result<Json<TermExercise>, AppError> {
+    let Query(query) =
+        query.map_err(|_| AppError::BadRequest("Unbekannte Abfragerichtung.".into()))?;
+    Ok(Json(
+        state
+            .database
+            .next_term_exercise(&course_id, query.direction)
+            .await?,
+    ))
+}
+
+async fn submit_term_attempt(
+    State(state): State<AppState>,
+    Path(term_id): Path<String>,
+    Json(submission): Json<TermAttemptSubmission>,
+) -> Result<Json<TermAttemptResult>, AppError> {
+    if submission.selected_option_id.trim().is_empty() {
+        return Err(AppError::BadRequest("Wähle eine Antwortoption aus.".into()));
+    }
+    Ok(Json(
+        state
+            .database
+            .submit_term_attempt(&term_id, submission)
             .await?,
     ))
 }
