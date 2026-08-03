@@ -1,5 +1,5 @@
 {
-  "corpus_version": "ctfl-4.0.1-glossary-4.7.2-6bed28403813",
+  "corpus_version": "ctfl-4.0.1-glossary-4.7.2-ed2168f42833",
   "courses": [
     {
       "id": "ctfl-4",
@@ -8654,178 +8654,6 @@
   ],
   "questions": [
     {
-      "id": "ctfl-q1",
-      "course_id": "ctfl-4",
-      "learning_objective_id": "ctfl-lo-1-1-1",
-      "prompt": "Welche Aussage beschreibt eine grundlegende Grenze des Testens am besten?",
-      "question_type": "single_choice",
-      "origin": "editorial",
-      "points": 1,
-      "explanation": "Testen kann das Vorhandensein von Fehlerwirkungen und Risiken sichtbar machen. Eine endliche Menge von Tests kann jedoch im Allgemeinen nicht beweisen, dass ein komplexes Testobjekt vollständig fehlerfrei ist.",
-      "source_label": "ISTQB CTFL v4.0.1 Syllabus",
-      "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/",
-      "source_section": "Testing Principles",
-      "options": [
-        {
-          "id": "ctfl-q1-o1",
-          "position": 1,
-          "text": "Ausreichend viele bestandene Tests beweisen vollständige Fehlerfreiheit.",
-          "is_correct": false,
-          "feedback": "Bestandene Tests liefern Evidenz für die geprüften Bedingungen, aber keinen vollständigen Fehlerfreiheitsbeweis."
-        },
-        {
-          "id": "ctfl-q1-o2",
-          "position": 2,
-          "text": "Testen kann vorhandene Fehlerwirkungen zeigen, aber vollständige Fehlerfreiheit nicht generell beweisen.",
-          "is_correct": true,
-          "feedback": "Richtig. Das beschreibt die Grenze positiver Testergebnisse."
-        },
-        {
-          "id": "ctfl-q1-o3",
-          "position": 3,
-          "text": "Testen ist nur sinnvoll, nachdem der gesamte Code fertiggestellt wurde.",
-          "is_correct": false,
-          "feedback": "Testaktivitäten können und sollen bereits früh im Lebenszyklus stattfinden."
-        },
-        {
-          "id": "ctfl-q1-o4",
-          "position": 4,
-          "text": "Testen besteht ausschließlich aus der Ausführung eines Testobjekts.",
-          "is_correct": false,
-          "feedback": "Testen umfasst auch statische und weitere nicht ausführende Aktivitäten."
-        }
-      ]
-    },
-    {
-      "id": "ctfl-q2",
-      "course_id": "ctfl-4",
-      "learning_objective_id": "ctfl-lo-1-1-1",
-      "prompt": "Zwei Produktbereiche können nicht gleich intensiv getestet werden. Bereich A hat eine höhere Eintrittswahrscheinlichkeit und einen größeren möglichen Schaden als Bereich B. Was ist die passendste Reaktion?",
-      "question_type": "single_choice",
-      "origin": "editorial",
-      "points": 1,
-      "explanation": "Bei einem höheren Produktrisiko wird typischerweise mehr oder früherer Testaufwand eingeplant. Die konkrete Reaktion bleibt kontextabhängig.",
-      "source_label": "ISTQB CTFL v4.0.1 Syllabus",
-      "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/",
-      "source_section": "Risk Management",
-      "options": [
-        {
-          "id": "ctfl-q2-o1",
-          "position": 1,
-          "text": "Bereich B zuerst testen, weil dort weniger Fehler erwartet werden.",
-          "is_correct": false,
-          "feedback": "Das würde die risikobasierte Priorisierung umkehren."
-        },
-        {
-          "id": "ctfl-q2-o2",
-          "position": 2,
-          "text": "Beide Bereiche unabhängig vom Risiko identisch behandeln.",
-          "is_correct": false,
-          "feedback": "Das ignoriert die verfügbaren Risikoinformationen."
-        },
-        {
-          "id": "ctfl-q2-o3",
-          "position": 3,
-          "text": "Bereich A höher priorisieren und den Testumfang dort gegebenenfalls erhöhen.",
-          "is_correct": true,
-          "feedback": "Richtig. Höheres Produktrisiko beeinflusst Priorität und Testintensität."
-        },
-        {
-          "id": "ctfl-q2-o4",
-          "position": 4,
-          "text": "Keinen der Bereiche testen, bis das Risiko vollständig beseitigt ist.",
-          "is_correct": false,
-          "feedback": "Testen liefert gerade Informationen über verbleibende Risiken."
-        }
-      ]
-    },
-    {
-      "id": "tm-q1",
-      "course_id": "ctal-tm-3",
-      "learning_objective_id": "tm-lo-context",
-      "prompt": "Ein Testmanager übernimmt zwei Produkte mit unterschiedlichen Entwicklungsmodellen, Risiken und regulatorischen Anforderungen. Welche Handlung ist am angemessensten?",
-      "question_type": "single_choice",
-      "origin": "editorial",
-      "points": 2,
-      "explanation": "Ein Testansatz wird aus dem jeweiligen Kontext abgeleitet. Eine organisatorische Strategie kann Leitplanken liefern, ersetzt aber nicht die Kontextanalyse.",
-      "source_label": "ISTQB CTAL-TM v3.0 Syllabus",
-      "source_url": "https://istqb.org/certifications/certified-tester-advanced-level-test-management-ctal-tm-v3-0/",
-      "source_section": "The Context of Testing",
-      "options": [
-        {
-          "id": "tm-q1-o1",
-          "position": 1,
-          "text": "Für beide Produkte unverändert denselben Testansatz verwenden.",
-          "is_correct": false,
-          "feedback": "Das blendet wesentliche Kontextunterschiede aus."
-        },
-        {
-          "id": "tm-q1-o2",
-          "position": 2,
-          "text": "Für jedes Produkt einen kontextabhängigen Testansatz innerhalb organisatorischer Leitplanken entwickeln.",
-          "is_correct": true,
-          "feedback": "Richtig. Strategie und Produktkontext werden gemeinsam berücksichtigt."
-        },
-        {
-          "id": "tm-q1-o3",
-          "position": 3,
-          "text": "Nur die regulatorischen Anforderungen betrachten.",
-          "is_correct": false,
-          "feedback": "Regulatorik ist wichtig, aber nur ein Teil des Testkontexts."
-        },
-        {
-          "id": "tm-q1-o4",
-          "position": 4,
-          "text": "Die Auswahl vollständig dem Testwerkzeug überlassen.",
-          "is_correct": false,
-          "feedback": "Werkzeuge unterstützen, bestimmen aber nicht selbst den geeigneten Testansatz."
-        }
-      ]
-    },
-    {
-      "id": "tm-q2",
-      "course_id": "ctal-tm-3",
-      "learning_objective_id": "tm-lo-metrics",
-      "prompt": "Die Zahl neu gemeldeter Fehlerzustände sinkt seit drei Wochen. Welche Schlussfolgerung ist ohne weitere Informationen zulässig?",
-      "question_type": "single_choice",
-      "origin": "editorial",
-      "points": 2,
-      "explanation": "Eine sinkende Fehlerzahl kann verschiedene Ursachen haben. Für eine belastbare Interpretation werden Kontext und weitere Kennzahlen benötigt.",
-      "source_label": "ISTQB CTAL-TM v3.0 Syllabus",
-      "source_url": "https://istqb.org/certifications/certified-tester-advanced-level-test-management-ctal-tm-v3-0/",
-      "source_section": "Test Metrics",
-      "options": [
-        {
-          "id": "tm-q2-o1",
-          "position": 1,
-          "text": "Die Produktqualität ist nachweislich gestiegen.",
-          "is_correct": false,
-          "feedback": "Die einzelne Metrik beweist das nicht."
-        },
-        {
-          "id": "tm-q2-o2",
-          "position": 2,
-          "text": "Das Testteam arbeitet nachweislich langsamer.",
-          "is_correct": false,
-          "feedback": "Auch diese Ursache lässt sich nicht aus der Kennzahl allein ableiten."
-        },
-        {
-          "id": "tm-q2-o3",
-          "position": 3,
-          "text": "Die Kennzahl muss zusammen mit Testumfang, Aktivität, Änderungen und weiteren Trends interpretiert werden.",
-          "is_correct": true,
-          "feedback": "Richtig. Metriken benötigen Ziel und Kontext."
-        },
-        {
-          "id": "tm-q2-o4",
-          "position": 4,
-          "text": "Alle Tests können sofort beendet werden.",
-          "is_correct": false,
-          "feedback": "Eine einzelne sinkende Kennzahl ist kein ausreichendes Abschlusskriterium."
-        }
-      ]
-    },
-    {
       "id": "ai-q1",
       "course_id": "ct-ai-2",
       "learning_objective_id": "ai-lo-data",
@@ -8866,7 +8694,11 @@
           "is_correct": false,
           "feedback": "Eine solche allgemeine Größenregel besteht nicht."
         }
-      ]
+      ],
+      "k_level": "K2",
+      "review_status": "approved",
+      "difficulty": "exam",
+      "reserved_for_exam": false
     },
     {
       "id": "ai-q2",
@@ -8909,7 +8741,249 @@
           "is_correct": false,
           "feedback": "Auch Klassenverteilung, Fehlertypen und Qualitätsziele sind entscheidend."
         }
+      ],
+      "k_level": "K3",
+      "review_status": "approved",
+      "difficulty": "exam",
+      "reserved_for_exam": false
+    },
+    {
+      "id": "ctfl-1-2-3-001",
+      "course_id": "ctfl-4",
+      "learning_objective_id": "ctfl-lo-1-2-3",
+      "k_level": "K2",
+      "prompt": "In einem Abrechnungssystem meldet der Kundendienst, dass Rechnungen für Kunden mit Wohnsitz im Ausland gelegentlich mit falschem Steuersatz erzeugt werden. Die Analyse zeigt: Eine Entwicklerin hatte die Anforderung zur Umsatzsteuerbefreiung missverstanden und die Prüfung auf das Lieferland statt auf das Sitzland programmiert. In der Nachbetrachtung stellt das Team fest, dass die Anforderung selbst mehrdeutig formuliert war. Welche Zuordnung trifft am ehesten zu?",
+      "question_type": "single_choice",
+      "origin": "editorial",
+      "review_status": "draft",
+      "difficulty": "exam",
+      "points": 1,
+      "reserved_for_exam": false,
+      "explanation": "Die mehrdeutige Anforderung ist die Grundursache, weil ihre Beseitigung weitere Fehler dieser Art verhindert. Das Missverständnis der Entwicklerin ist die Fehlhandlung, die falsch programmierte Prüfung der Fehlerzustand im Code und die falsch erzeugte Rechnung die Fehlerwirkung im Betrieb.",
+      "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+      "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level",
+      "source_section": "1.2.3 Errors, Defects, Failures, and Root Causes",
+      "options": [
+        {
+          "id": "ctfl-1-2-3-001-o1",
+          "position": 1,
+          "text": "Die mehrdeutige Anforderung ist die Grundursache, das Missverständnis die Fehlhandlung, die falsch programmierte Prüfung der Fehlerzustand und die falsche Rechnung die Fehlerwirkung.",
+          "is_correct": true,
+          "feedback": "Richtig. Die Kette verläuft von der Grundursache über Fehlhandlung und Fehlerzustand bis zur beobachtbaren Fehlerwirkung."
+        },
+        {
+          "id": "ctfl-1-2-3-001-o2",
+          "position": 2,
+          "text": "Das Missverständnis der Entwicklerin ist die Grundursache, die falsch programmierte Prüfung die Fehlhandlung und die falsche Rechnung der Fehlerzustand.",
+          "is_correct": false,
+          "feedback": "Die Kette ist um ein Glied verschoben. Das Missverständnis ist die Fehlhandlung; die Grundursache liegt davor, hier in der mehrdeutigen Anforderung.",
+          "misconception": "Grundursache wird mit der Fehlhandlung gleichgesetzt, statt nach der davorliegenden Ursache zu fragen."
+        },
+        {
+          "id": "ctfl-1-2-3-001-o3",
+          "position": 3,
+          "text": "Die falsch erzeugte Rechnung ist der Fehlerzustand, weil das Ergebnis nicht den Anforderungen entspricht.",
+          "is_correct": false,
+          "feedback": "Die falsche Rechnung ist die Fehlerwirkung. Der Fehlerzustand ist die fehlerhafte Stelle im Arbeitsergebnis, hier die Prüfung auf das Lieferland.",
+          "misconception": "Fehlerzustand und Fehlerwirkung werden verwechselt, weil beide als etwas Falsches wahrgenommen werden."
+        },
+        {
+          "id": "ctfl-1-2-3-001-o4",
+          "position": 4,
+          "text": "Da die Anforderung mehrdeutig war, liegt kein Fehlerzustand vor, sondern ausschließlich eine Anforderungslücke.",
+          "is_correct": false,
+          "feedback": "Auch bei mehrdeutiger Anforderung enthält der Code eine fehlerhafte Prüfung. Die Herkunft der Ursache hebt den Fehlerzustand nicht auf.",
+          "misconception": "Eine Ursache außerhalb des Codes wird so verstanden, als gäbe es im Code selbst keinen Fehlerzustand."
+        }
       ]
+    },
+    {
+      "id": "ctfl-q1",
+      "course_id": "ctfl-4",
+      "learning_objective_id": "ctfl-lo-1-1-1",
+      "prompt": "Welche Aussage beschreibt eine grundlegende Grenze des Testens am besten?",
+      "question_type": "single_choice",
+      "origin": "editorial",
+      "points": 1,
+      "explanation": "Testen kann das Vorhandensein von Fehlerwirkungen und Risiken sichtbar machen. Eine endliche Menge von Tests kann jedoch im Allgemeinen nicht beweisen, dass ein komplexes Testobjekt vollständig fehlerfrei ist.",
+      "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+      "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/",
+      "source_section": "Testing Principles",
+      "options": [
+        {
+          "id": "ctfl-q1-o1",
+          "position": 1,
+          "text": "Ausreichend viele bestandene Tests beweisen vollständige Fehlerfreiheit.",
+          "is_correct": false,
+          "feedback": "Bestandene Tests liefern Evidenz für die geprüften Bedingungen, aber keinen vollständigen Fehlerfreiheitsbeweis."
+        },
+        {
+          "id": "ctfl-q1-o2",
+          "position": 2,
+          "text": "Testen kann vorhandene Fehlerwirkungen zeigen, aber vollständige Fehlerfreiheit nicht generell beweisen.",
+          "is_correct": true,
+          "feedback": "Richtig. Das beschreibt die Grenze positiver Testergebnisse."
+        },
+        {
+          "id": "ctfl-q1-o3",
+          "position": 3,
+          "text": "Testen ist nur sinnvoll, nachdem der gesamte Code fertiggestellt wurde.",
+          "is_correct": false,
+          "feedback": "Testaktivitäten können und sollen bereits früh im Lebenszyklus stattfinden."
+        },
+        {
+          "id": "ctfl-q1-o4",
+          "position": 4,
+          "text": "Testen besteht ausschließlich aus der Ausführung eines Testobjekts.",
+          "is_correct": false,
+          "feedback": "Testen umfasst auch statische und weitere nicht ausführende Aktivitäten."
+        }
+      ],
+      "k_level": "K1",
+      "review_status": "approved",
+      "difficulty": "exam",
+      "reserved_for_exam": false
+    },
+    {
+      "id": "ctfl-q2",
+      "course_id": "ctfl-4",
+      "learning_objective_id": "ctfl-lo-1-1-1",
+      "prompt": "Zwei Produktbereiche können nicht gleich intensiv getestet werden. Bereich A hat eine höhere Eintrittswahrscheinlichkeit und einen größeren möglichen Schaden als Bereich B. Was ist die passendste Reaktion?",
+      "question_type": "single_choice",
+      "origin": "editorial",
+      "points": 1,
+      "explanation": "Bei einem höheren Produktrisiko wird typischerweise mehr oder früherer Testaufwand eingeplant. Die konkrete Reaktion bleibt kontextabhängig.",
+      "source_label": "ISTQB CTFL v4.0.1 Syllabus",
+      "source_url": "https://www.istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/",
+      "source_section": "Risk Management",
+      "options": [
+        {
+          "id": "ctfl-q2-o1",
+          "position": 1,
+          "text": "Bereich B zuerst testen, weil dort weniger Fehler erwartet werden.",
+          "is_correct": false,
+          "feedback": "Das würde die risikobasierte Priorisierung umkehren."
+        },
+        {
+          "id": "ctfl-q2-o2",
+          "position": 2,
+          "text": "Beide Bereiche unabhängig vom Risiko identisch behandeln.",
+          "is_correct": false,
+          "feedback": "Das ignoriert die verfügbaren Risikoinformationen."
+        },
+        {
+          "id": "ctfl-q2-o3",
+          "position": 3,
+          "text": "Bereich A höher priorisieren und den Testumfang dort gegebenenfalls erhöhen.",
+          "is_correct": true,
+          "feedback": "Richtig. Höheres Produktrisiko beeinflusst Priorität und Testintensität."
+        },
+        {
+          "id": "ctfl-q2-o4",
+          "position": 4,
+          "text": "Keinen der Bereiche testen, bis das Risiko vollständig beseitigt ist.",
+          "is_correct": false,
+          "feedback": "Testen liefert gerade Informationen über verbleibende Risiken."
+        }
+      ],
+      "k_level": "K1",
+      "review_status": "approved",
+      "difficulty": "exam",
+      "reserved_for_exam": false
+    },
+    {
+      "id": "tm-q1",
+      "course_id": "ctal-tm-3",
+      "learning_objective_id": "tm-lo-context",
+      "prompt": "Ein Testmanager übernimmt zwei Produkte mit unterschiedlichen Entwicklungsmodellen, Risiken und regulatorischen Anforderungen. Welche Handlung ist am angemessensten?",
+      "question_type": "single_choice",
+      "origin": "editorial",
+      "points": 2,
+      "explanation": "Ein Testansatz wird aus dem jeweiligen Kontext abgeleitet. Eine organisatorische Strategie kann Leitplanken liefern, ersetzt aber nicht die Kontextanalyse.",
+      "source_label": "ISTQB CTAL-TM v3.0 Syllabus",
+      "source_url": "https://istqb.org/certifications/certified-tester-advanced-level-test-management-ctal-tm-v3-0/",
+      "source_section": "The Context of Testing",
+      "options": [
+        {
+          "id": "tm-q1-o1",
+          "position": 1,
+          "text": "Für beide Produkte unverändert denselben Testansatz verwenden.",
+          "is_correct": false,
+          "feedback": "Das blendet wesentliche Kontextunterschiede aus."
+        },
+        {
+          "id": "tm-q1-o2",
+          "position": 2,
+          "text": "Für jedes Produkt einen kontextabhängigen Testansatz innerhalb organisatorischer Leitplanken entwickeln.",
+          "is_correct": true,
+          "feedback": "Richtig. Strategie und Produktkontext werden gemeinsam berücksichtigt."
+        },
+        {
+          "id": "tm-q1-o3",
+          "position": 3,
+          "text": "Nur die regulatorischen Anforderungen betrachten.",
+          "is_correct": false,
+          "feedback": "Regulatorik ist wichtig, aber nur ein Teil des Testkontexts."
+        },
+        {
+          "id": "tm-q1-o4",
+          "position": 4,
+          "text": "Die Auswahl vollständig dem Testwerkzeug überlassen.",
+          "is_correct": false,
+          "feedback": "Werkzeuge unterstützen, bestimmen aber nicht selbst den geeigneten Testansatz."
+        }
+      ],
+      "k_level": "K3",
+      "review_status": "approved",
+      "difficulty": "exam",
+      "reserved_for_exam": false
+    },
+    {
+      "id": "tm-q2",
+      "course_id": "ctal-tm-3",
+      "learning_objective_id": "tm-lo-metrics",
+      "prompt": "Die Zahl neu gemeldeter Fehlerzustände sinkt seit drei Wochen. Welche Schlussfolgerung ist ohne weitere Informationen zulässig?",
+      "question_type": "single_choice",
+      "origin": "editorial",
+      "points": 2,
+      "explanation": "Eine sinkende Fehlerzahl kann verschiedene Ursachen haben. Für eine belastbare Interpretation werden Kontext und weitere Kennzahlen benötigt.",
+      "source_label": "ISTQB CTAL-TM v3.0 Syllabus",
+      "source_url": "https://istqb.org/certifications/certified-tester-advanced-level-test-management-ctal-tm-v3-0/",
+      "source_section": "Test Metrics",
+      "options": [
+        {
+          "id": "tm-q2-o1",
+          "position": 1,
+          "text": "Die Produktqualität ist nachweislich gestiegen.",
+          "is_correct": false,
+          "feedback": "Die einzelne Metrik beweist das nicht."
+        },
+        {
+          "id": "tm-q2-o2",
+          "position": 2,
+          "text": "Das Testteam arbeitet nachweislich langsamer.",
+          "is_correct": false,
+          "feedback": "Auch diese Ursache lässt sich nicht aus der Kennzahl allein ableiten."
+        },
+        {
+          "id": "tm-q2-o3",
+          "position": 3,
+          "text": "Die Kennzahl muss zusammen mit Testumfang, Aktivität, Änderungen und weiteren Trends interpretiert werden.",
+          "is_correct": true,
+          "feedback": "Richtig. Metriken benötigen Ziel und Kontext."
+        },
+        {
+          "id": "tm-q2-o4",
+          "position": 4,
+          "text": "Alle Tests können sofort beendet werden.",
+          "is_correct": false,
+          "feedback": "Eine einzelne sinkende Kennzahl ist kein ausreichendes Abschlusskriterium."
+        }
+      ],
+      "k_level": "K3",
+      "review_status": "approved",
+      "difficulty": "exam",
+      "reserved_for_exam": false
     }
   ],
   "confusion_clusters": [
